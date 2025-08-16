@@ -1,26 +1,169 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Import Tailwind CSS */
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fcf8f1; /* Beige 100 */
+  --foreground: #3d3d3d; /* Charcoal 900 */
+  --accent: #ca6f72; /* Dusty Rose 500 */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --font-playfair: "Playfair Display", serif;
+  --font-inter: "Inter", sans-serif;
+  
+  /* Aura Store Feminine Color Palette */
+  --color-beige-50: #fefcf9;
+  --color-beige-100: #fcf8f1;
+  --color-beige-200: #f7efe0;
+  --color-beige-300: #f2e6cf;
+  --color-beige-400: #eddaad;
+  --color-beige-500: #e8ce8c;
+  --color-beige-600: #d4b87e;
+  --color-beige-700: #b19968;
+  --color-beige-800: #8e7a52;
+  --color-beige-900: #746443;
+  
+  --color-dusty-rose-50: #fdf8f8;
+  --color-dusty-rose-100: #faf0f0;
+  --color-dusty-rose-200: #f2dadb;
+  --color-dusty-rose-300: #eac4c6;
+  --color-dusty-rose-400: #da999c;
+  --color-dusty-rose-500: #ca6f72;
+  --color-dusty-rose-600: #b66467;
+  --color-dusty-rose-700: #975356;
+  --color-dusty-rose-800: #784245;
+  --color-dusty-rose-900: #623639;
+  
+  /* Soft Pink - Perfect for women's fashion */
+  --color-soft-pink-50: #fef7f7;
+  --color-soft-pink-100: #feeaea;
+  --color-soft-pink-200: #fccdd1;
+  --color-soft-pink-300: #f9a3ab;
+  --color-soft-pink-400: #f4717c;
+  --color-soft-pink-500: #ec4654;
+  --color-soft-pink-600: #d9293c;
+  --color-soft-pink-700: #b71f31;
+  --color-soft-pink-800: #9a1d2e;
+  --color-soft-pink-900: #831c2c;
+  
+  /* Blush - Elegant and feminine */
+  --color-blush-50: #fef8f6;
+  --color-blush-100: #fcefeb;
+  --color-blush-200: #f9ddd6;
+  --color-blush-300: #f4c1b3;
+  --color-blush-400: #ec9b87;
+  --color-blush-500: #e07a5f;
+  --color-blush-600: #ce6248;
+  --color-blush-700: #ab4f3a;
+  --color-blush-800: #8a4332;
+  --color-blush-900: #6f3a2d;
+  
+  /* Lavender - Soft and dreamy */
+  --color-lavender-50: #faf8ff;
+  --color-lavender-100: #f3f0ff;
+  --color-lavender-200: #e9e5ff;
+  --color-lavender-300: #d5ccff;
+  --color-lavender-400: #b8a9ff;
+  --color-lavender-500: #9c85ff;
+  --color-lavender-600: #8763f7;
+  --color-lavender-700: #7551e3;
+  --color-lavender-800: #6142bf;
+  --color-lavender-900: #51399b;
+  
+  /* Sage - Natural and calming */
+  --color-sage-50: #f7f9f7;
+  --color-sage-100: #edf2ed;
+  --color-sage-200: #d8e5d8;
+  --color-sage-300: #b9d0b9;
+  --color-sage-400: #94b394;
+  --color-sage-500: #729672;
+  --color-sage-600: #5a7a5a;
+  --color-sage-700: #496149;
+  --color-sage-800: #3d4f3d;
+  --color-sage-900: #354135;
+  
+  --color-charcoal-50: #f6f6f6;
+  --color-charcoal-100: #e7e7e7;
+  --color-charcoal-200: #d1d1d1;
+  --color-charcoal-300: #b0b0b0;
+  --color-charcoal-400: #888888;
+  --color-charcoal-500: #6d6d6d;
+  --color-charcoal-600: #5d5d5d;
+  --color-charcoal-700: #4f4f4f;
+  --color-charcoal-800: #454545;
+  --color-charcoal-900: #3d3d3d;
+  --color-charcoal-950: #262626;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #262626; /* Charcoal 950 */
+    --foreground: #fcf8f1; /* Beige 100 */
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter);
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--accent);
+  border-radius: 4px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #b66467; /* Dusty Rose 600 */
+}
+
+/* Typography utilities */
+.font-heading {
+  font-family: var(--font-playfair);
+}
+
+.font-body {
+  font-family: var(--font-inter);
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
