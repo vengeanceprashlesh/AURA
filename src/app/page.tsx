@@ -47,9 +47,6 @@ export default function Home() {
           <div className="relative bg-gradient-to-br from-yellow-100 to-yellow-200 hidden md:block">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80')] bg-cover bg-center"></div>
             <div className="absolute inset-0 bg-yellow-400 bg-opacity-20"></div>
-            <div className="absolute bottom-6 right-6 text-white">
-              <p className="text-sm font-medium uppercase tracking-wider">Frankies Bikinis</p>
-            </div>
           </div>
         </div>
         
