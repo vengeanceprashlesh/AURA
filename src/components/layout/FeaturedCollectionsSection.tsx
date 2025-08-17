@@ -1,46 +1,37 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Mock data for featured collections
+// Mock data for featured collections linking to category pages
 const collections = [
   {
-    id: 'elegant-essentials',
-    name: 'Elegant Essentials',
+    id: 'luxe-classics',
+    name: 'Luxe Classics',
     description: 'Timeless pieces for the modern wardrobe',
     itemCount: 24,
-    image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&h=400&fit=crop&crop=faces',
-    href: '/collections/elegant-essentials',
+    image: '/images/luxe.webp',
+    href: '/categories/luxe-classics',
     featured: true,
   },
   {
-    id: 'spring-collection',
-    name: 'Spring Collection',
-    description: 'Fresh styles for the new season',
+    id: 'sets',
+    name: 'Most Wanted Sets',
+    description: 'Perfectly coordinated pieces for effortless style',
     itemCount: 18,
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=400&fit=crop&crop=faces',
-    href: '/collections/spring-collection',
+    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=720&q=80',
+    href: '/categories/sets',
     featured: false,
   },
   {
-    id: 'sustainable-luxury',
-    name: 'Sustainable Luxury',
-    description: 'Eco-conscious fashion that doesn\'t compromise on style',
-    itemCount: 16,
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=400&fit=crop&crop=faces',
-    href: '/collections/sustainable-luxury',
-    featured: false,
-  },
-  {
-    id: 'accessories',
-    name: 'Statement Accessories',
-    description: 'Complete your look with curated accessories',
+    id: 'dresses',
+    name: 'Dresses of the Season',
+    description: 'From casual day dresses to elegant evening wear',
     itemCount: 32,
-    image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=600&h=400&fit=crop&crop=faces',
-    href: '/collections/accessories',
+    image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=720&q=80',
+    href: '/categories/dresses',
     featured: false,
   },
 ];
@@ -71,12 +62,10 @@ const CollectionCard: React.FC<CollectionCardProps> = ({ collection, className =
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <Image
+            <img
               src={collection.image}
               alt={collection.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="w-full h-full object-cover"
             />
           </motion.div>
           
@@ -221,31 +210,29 @@ const FeaturedCollectionsSection = () => {
 
         {/* Collections Grid */}
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
           variants={itemVariants}
         >
-          {/* Featured Collection - Takes 2 columns on large screens */}
+          {/* Featured Collection - Takes full width on large screens */}
           <CollectionCard 
             collection={featuredCollection} 
-            className="lg:col-span-2 lg:row-span-2"
+            className="lg:col-span-2"
           />
           
           {/* Other Collections */}
-          <div className="space-y-6">
-            {otherCollections.map((collection, index) => (
-              <motion.div
-                key={collection.id}
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
-              >
-                <CollectionCard 
-                  collection={collection} 
-                  className="aspect-[4/3] lg:aspect-[2/1]"
-                />
-              </motion.div>
-            ))}
-          </div>
+          {otherCollections.map((collection, index) => (
+            <motion.div
+              key={collection.id}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
+            >
+              <CollectionCard 
+                collection={collection} 
+                className="aspect-[4/3]"
+              />
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* CTA Section */}

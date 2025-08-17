@@ -4,10 +4,8 @@ import CategoryPageBase from '@/components/layout/CategoryPageBase';
 
 const HeelsPage = () => {
   const categories = [
-    { id: 'pumps', name: 'Pumps', href: '/categories/shoes/heels/pumps', count: 32 },
-    { id: 'stilettos', name: 'Stilettos', href: '/categories/shoes/heels/stilettos', count: 18 },
-    { id: 'block-heels', name: 'Block Heels', href: '/categories/shoes/heels/block', count: 28 },
-    { id: 'wedges', name: 'Wedges', href: '/categories/shoes/heels/wedges', count: 22 },
+    { id: 'pumps', name: 'Pumps', href: '/categories/shoes/heels/pumps', count: 45 },
+    { id: 'wedges', name: 'Wedges', href: '/categories/shoes/heels/wedges', count: 35 },
   ];
 
   return (

@@ -6,7 +6,6 @@ import { Heart, ShoppingBag, User, Menu, X, Search, Phone, Mail, Sparkles, Crown
 import { motion } from 'framer-motion';
 import { useCartStore } from '@/store/cartStore';
 import { navigationCategories } from '@/data/categories';
-import MegaMenuDropdown from './MegaMenuDropdown';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,7 +20,6 @@ const Header = () => {
     { href: '/categories/shoes', label: 'Shoes' },
     { href: '/categories/accessories', label: 'Accessories' },
     { href: '/bestsellers', label: 'Bestsellers' },
-    { href: '/categories/hot-list', label: 'Trending' },
     { href: '/categories/sale', label: 'Sale' },
   ];
 
@@ -31,8 +29,8 @@ const Header = () => {
 
   return (
     <header className="bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
           {/* Logo - Left */}
           <div className="flex-shrink-0">
             <Link href="/" className="group">
@@ -41,10 +39,10 @@ const Header = () => {
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                <div className="text-3xl font-serif font-bold bg-gradient-to-r from-rose-600 to-rose-500 bg-clip-text text-transparent tracking-wide">
+                <div className="text-xl sm:text-2xl md:text-3xl font-serif font-bold bg-gradient-to-r from-rose-600 to-rose-500 bg-clip-text text-transparent tracking-wide">
                   AURA
                 </div>
-                <div className="text-[10px] text-gray-500 font-light tracking-[0.2em] -mt-1">
+                <div className="text-[7px] sm:text-[8px] md:text-[10px] text-gray-500 font-light tracking-[0.2em] -mt-1">
                   MARKETPLACE
                 </div>
               </motion.div>
@@ -62,7 +60,6 @@ const Header = () => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1, duration: 0.3 }}
-                    onMouseEnter={() => setActiveCategory(category.id)}
                   >
                     <Link
                       href={category.href}
@@ -104,14 +101,6 @@ const Header = () => {
                         transition={{ duration: 0.3 }}
                       />
                     </Link>
-                    
-                    {category.subcategories && (
-                      <MegaMenuDropdown
-                        category={category}
-                        isOpen={activeCategory === category.id}
-                        onClose={() => setActiveCategory(null)}
-                      />
-                    )}
                   </motion.div>
                 ))}
               </div>
@@ -119,39 +108,39 @@ const Header = () => {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center space-x-2">
-            {/* Search */}
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            {/* Search - Hidden on mobile */}
             <motion.button 
-              className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group"
+              className="hidden lg:flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group"
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Search className="h-5 w-5" />
+              <Search className="h-4 sm:h-5 w-4 sm:w-5" />
               <span className="sr-only">Search</span>
             </motion.button>
 
-            {/* Wishlist */}
+            {/* Wishlist - Hidden on small mobile */}
             <motion.button 
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group relative"
+              className="hidden sm:flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group relative"
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Heart className="h-5 w-5 group-hover:fill-current" />
+              <Heart className="h-4 sm:h-5 w-4 sm:w-5 group-hover:fill-current" />
               <span className="sr-only">Wishlist</span>
             </motion.button>
 
             {/* Shopping Bag */}
             <motion.button 
               onClick={toggleCart}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group relative"
+              className="flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group relative"
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingBag className="h-4 sm:h-5 w-4 sm:w-5" />
               {/* Cart badge */}
               {totalItems > 0 && (
                 <motion.span 
-                  className="absolute -top-1 -right-1 bg-gradient-to-r from-rose-500 to-rose-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg"
+                  className="absolute -top-0.5 sm:-top-1 -right-0.5 sm:-right-1 bg-gradient-to-r from-rose-500 to-rose-600 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center font-bold shadow-lg text-[10px] sm:text-xs"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -162,66 +151,98 @@ const Header = () => {
               <span className="sr-only">Shopping bag</span>
             </motion.button>
 
-            {/* User Account */}
+            {/* User Account - Hidden on small mobile */}
             <motion.button 
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 group"
+              className="hidden sm:flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 group"
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <User className="h-5 w-5" />
+              <User className="h-4 sm:h-5 w-4 sm:w-5" />
               <span className="sr-only">Account</span>
             </motion.button>
 
             {/* Mobile menu button */}
-            <button
+            <motion.button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2 text-gray-700 hover:text-black transition-colors"
+              className="lg:hidden p-2 rounded-md text-gray-700 hover:text-rose-600 hover:bg-rose-50 transition-all duration-200 ml-1"
+              whileTap={{ scale: 0.95 }}
             >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              <motion.div
+                animate={isMobileMenuOpen ? { rotate: 180 } : { rotate: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-5 w-5 sm:h-6 sm:w-6" />
+                ) : (
+                  <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
+                )}
+              </motion.div>
               <span className="sr-only">Toggle menu</span>
-            </button>
+            </motion.button>
           </div>
         </div>
 
-        {/* Professional Mobile Navigation */}
+        {/* Enhanced Mobile Navigation */}
         <motion.div 
           className={`lg:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: isMobileMenuOpen ? 1 : 0, y: isMobileMenuOpen ? 0 : -20 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="px-4 pt-4 pb-6 space-y-1 bg-white border-t border-gray-200">
+          <div className="px-4 pt-4 pb-6 space-y-1 bg-white border-t border-gray-100 shadow-lg rounded-b-lg mx-2 sm:mx-4">
             {mobileMenuLinks.map((link, index) => (
               <motion.div
                 key={link.href}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.08 }}
               >
                 <Link
                   href={link.href}
-                  className={`block px-4 py-3 text-base font-medium transition-colors ${
-                    link.featured ? 'text-rose-600 bg-rose-50 rounded-md' : 'text-gray-700 hover:text-rose-600 hover:bg-gray-50'
+                  className={`flex items-center justify-between px-4 py-3.5 text-base font-medium transition-all duration-200 rounded-lg ${
+                    link.featured 
+                      ? 'text-rose-600 bg-gradient-to-r from-rose-50 to-rose-100 border border-rose-200' 
+                      : 'text-gray-700 hover:text-rose-600 hover:bg-rose-50 hover:translate-x-1'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  {link.featured && <span className="text-rose-500 text-sm">🔥</span>}
                 </Link>
               </motion.div>
             ))}
             
-            {/* Professional Mobile CTA */}
+            {/* Mobile Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="mt-6 space-y-3"
+            >
+              {/* Search Button for Mobile */}
+              <button className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                <Search className="h-5 w-5" />
+                <span className="font-medium">Search Products</span>
+              </button>
+              
+              {/* Account Button for Mobile */}
+              <div className="sm:hidden">
+                <button className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                  <User className="h-5 w-5" />
+                  <span className="font-medium">My Account</span>
+                </button>
+              </div>
+            </motion.div>
+            
+            {/* Enhanced Mobile CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="mt-6 p-4 bg-rose-50 rounded-md text-center"
+              className="mt-6 p-4 bg-gradient-to-r from-rose-50 to-rose-100 rounded-lg text-center border border-rose-200"
             >
-              <p className="text-sm text-rose-600 font-medium">Get 15% off your first order!</p>
+              <p className="text-sm text-rose-600 font-semibold mb-1">✨ Welcome to Aura!</p>
+              <p className="text-xs text-rose-500">Get 15% off your first order</p>
             </motion.div>
           </div>
         </motion.div>

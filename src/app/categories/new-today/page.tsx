@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import TrendingSection from '@/components/TrendingSection';
 
 export default function NewTodayPage() {
   const featuredItems = [
@@ -28,26 +29,44 @@ export default function NewTodayPage() {
     },
   ];
 
-  const justInItems = [
-    { name: 'New Today', href: '/categories/new-today/all' },
-    { name: 'All New Arrivals', href: '/categories/new-today/arrivals' },
-    { name: 'New Dresses', href: '/categories/new-today/dresses' },
-    { name: 'New Sets', href: '/categories/new-today/sets' },
-    { name: 'New Tops', href: '/categories/new-today/tops' },
-    { name: 'New Denim', href: '/categories/new-today/denim' },
-    { name: 'New Swim & Cover-Ups', href: '/categories/new-today/swim' },
-    { name: 'All New Clothing', href: '/categories/new-today/clothing' },
-  ];
-
-  const trendingItems = [
-    { name: 'Lingerie for Day', href: '/trending/lingerie-day' },
-    { name: 'Country Cute', href: '/trending/country-cute' },
-    { name: 'Soft Girl Summer', href: '/trending/soft-girl' },
-    { name: 'Summer Social Cal', href: '/trending/summer-social' },
-    { name: 'Summer Workwear', href: '/trending/summer-workwear' },
-    { name: 'Airport Style', href: '/trending/airport-style' },
-    { name: 'The French Girl Drop', href: '/trending/french-girl' },
-    { name: 'The Cotton Shop', href: '/trending/cotton-shop' },
+  // Sample new arrival products
+  const newProducts = [
+    {
+      id: 1,
+      name: "Silk Wrap Midi Dress",
+      price: "$189",
+      originalPrice: "$245",
+      image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=400&h=600",
+      badge: "JUST IN",
+      isNew: true
+    },
+    {
+      id: 2,
+      name: "Cashmere Blend Cardigan",
+      price: "$156",
+      originalPrice: "$195",
+      image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=400&h=600",
+      badge: "TRENDING",
+      isNew: true
+    },
+    {
+      id: 3,
+      name: "High-Waisted Wide Leg Pants",
+      price: "$98",
+      originalPrice: "$128",
+      image: "https://images.unsplash.com/photo-1506629905136-b5f3fde5ee30?auto=format&fit=crop&w=400&h=600",
+      badge: "BESTSELLER",
+      isNew: true
+    },
+    {
+      id: 4,
+      name: "Statement Pearl Earrings",
+      price: "$67",
+      originalPrice: "$89",
+      image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=400&h=600",
+      badge: "LIMITED",
+      isNew: true
+    },
   ];
 
   return (
@@ -108,47 +127,62 @@ export default function NewTodayPage() {
           </div>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Just In Section */}
-          <section>
-            <h2 className="font-heading text-2xl font-bold text-charcoal-900 mb-6">Just In</h2>
-            <div className="bg-white rounded-lg shadow-sm border border-beige-200 p-6">
-              <ul className="space-y-4">
-                {justInItems.map((item, index) => (
-                  <li key={index}>
-                    <Link
-                      href={item.href}
-                      className="flex items-center justify-between text-charcoal-700 hover:text-dusty-rose-500 transition-colors py-2 group"
-                    >
-                      <span className="font-medium">{item.name}</span>
-                      <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
+        {/* New Today Products */}
+        <section className="mb-16">
+          <h2 className="font-heading text-3xl font-bold text-charcoal-900 mb-8 text-center">Latest Arrivals</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {newProducts.map((product) => (
+              <div key={product.id} className="group cursor-pointer">
+                <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-500">
+                  {/* Image */}
+                  <div className="relative aspect-[3/4] overflow-hidden">
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {/* Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${
+                        product.badge === 'JUST IN' ? 'bg-green-500' :
+                        product.badge === 'TRENDING' ? 'bg-blue-500' :
+                        product.badge === 'BESTSELLER' ? 'bg-purple-500' :
+                        product.badge === 'LIMITED' ? 'bg-red-500' :
+                        'bg-orange-500'
+                      }`}>
+                        {product.badge}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Product Info */}
+                  <div className="p-4">
+                    <h3 className="font-bold text-gray-900 mb-2 group-hover:text-rose-600 transition-colors">
+                      {product.name}
+                    </h3>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-xl font-bold text-rose-600">{product.price}</span>
+                      <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          {/* Trending Section */}
-          <section>
-            <h2 className="font-heading text-2xl font-bold text-charcoal-900 mb-6">Trending</h2>
-            <div className="bg-white rounded-lg shadow-sm border border-beige-200 p-6">
-              <ul className="space-y-4">
-                {trendingItems.map((item, index) => (
-                  <li key={index}>
-                    <Link
-                      href={item.href}
-                      className="flex items-center justify-between text-charcoal-700 hover:text-dusty-rose-500 transition-colors py-2 group"
-                    >
-                      <span className="font-medium">{item.name}</span>
-                      <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+        {/* Compact Trending Section */}
+        <section className="mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <TrendingSection compact={false} maxCategories={2} className="" />
             </div>
-          </section>
-        </div>
+            <div>
+              <TrendingSection compact={true} maxCategories={4} />
+            </div>
+          </div>
+        </section>
+
       </div>
     </div>
   );

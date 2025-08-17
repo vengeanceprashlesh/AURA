@@ -1,6 +1,5 @@
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 /* Import Tailwind CSS */
 @import "tailwindcss";
@@ -12,8 +11,8 @@
 }
 
 @theme {
-  --font-playfair: "Playfair Display", serif;
-  --font-inter: "Inter", sans-serif;
+  --font-playfair: "Playfair Display", "Georgia", "Times New Roman", serif;
+  --font-inter: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   
   /* Aura Store Feminine Color Palette */
   --color-beige-50: #fefcf9;
@@ -146,6 +145,51 @@ body::-webkit-scrollbar-thumb:hover {
   transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
+/* Mobile-first improvements */
+@media (max-width: 640px) {
+  /* Improved touch targets for mobile */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better mobile text sizes */
+  .text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  /* Mobile-specific spacing */
+  .mobile-px {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Mobile-friendly hover states (disable on touch devices) */
+  @media (hover: none) {
+    .hover\:scale-105:hover {
+      transform: none;
+    }
+    
+    .group:hover .group-hover\:translate-x-1 {
+      transform: none;
+    }
+  }
+}
+
+/* Tablet improvements */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
 /* Line clamp utilities */
 .line-clamp-1 {
   overflow: hidden;
@@ -166,4 +210,71 @@ body::-webkit-scrollbar-thumb:hover {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+}
+
+/* Mobile-specific utilities */
+.touch-friendly {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-only {
+  display: block;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Improved focus styles for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid #ca6f72;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Mobile navigation enhancements */
+.mobile-nav-item {
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-item:active {
+  transform: scale(0.98);
+  background-color: rgba(202, 111, 114, 0.1);
+}
+
+/* Better mobile form elements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  font-size: 16px; /* Prevents zoom on iOS */
+  padding: 12px;
+  border-radius: 8px;
+}
+
+/* Mobile-friendly animations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

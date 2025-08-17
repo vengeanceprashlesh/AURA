@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Star, Heart, ShoppingBag, TrendingUp, Clock, Sparkles } from 'lucide-react';
+import TrendingSection from '@/components/TrendingSection';
 
 export default function NewArrivals() {
   const newArrivals = [
@@ -213,6 +214,13 @@ export default function NewArrivals() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Trending Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <TrendingSection compact={false} maxCategories={4} className="" />
         </div>
       </section>
 
