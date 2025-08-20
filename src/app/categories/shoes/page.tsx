@@ -1,150 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronRight, Heart, Star, TrendingUp, Flame, Eye } from 'lucide-react';
+import { ChevronRight, Heart, Eye } from 'lucide-react';
 
-// Sample shoe products based on the screenshot
-const shoeProducts = [
-  {
-    id: 1,
-    name: 'Gazelle Indoor',
-    brand: 'adidas Originals',
-    price: '£10,460.15',
-    originalPrice: null,
-    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=600&fit=crop',
-    subcategory: 'Sneakers',
-    rating: 4.8,
-    reviews: 156,
-    isTrending: true,
-    soldCount: 8,
-    timeFrame: '48 hrs',
-    colors: ['navy', 'white'],
-    isNew: false,
-    onSale: false,
-  },
-  {
-    id: 2,
-    name: 'Gel-1130 Sneaker',
-    brand: 'Asics',
-    price: '£8,716.79',
-    originalPrice: null,
-    image: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=600&fit=crop',
-    subcategory: 'Sneakers',
-    rating: 4.6,
-    reviews: 89,
-    isTrending: false,
-    soldCount: null,
-    timeFrame: null,
-    colors: ['white', 'gray'],
-    isNew: false,
-    onSale: false,
-  },
-  {
-    id: 3,
-    name: 'Riggs Boot',
-    brand: 'Steve Madden',
-    price: '£17,346.41',
-    originalPrice: null,
-    image: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=600&fit=crop',
-    subcategory: 'Boots',
-    rating: 4.7,
-    reviews: 234,
-    isTrending: true,
-    soldCount: 6,
-    timeFrame: '48 hrs',
-    colors: ['brown'],
-    isNew: false,
-    onSale: false,
-  },
-  {
-    id: 4,
-    name: 'Hadyn Sandal',
-    brand: 'Steve Madden',
-    price: '£5,142.91',
-    originalPrice: null,
-    image: 'https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=400&h=600&fit=crop',
-    subcategory: 'Sandals',
-    rating: 4.5,
-    reviews: 167,
-    inDemand: true,
-    soldCount: 52,
-    timeFrame: '48 hrs',
-    colors: ['tan'],
-    isNew: false,
-    onSale: false,
-    isBestSeller: true,
-  },
-  {
-    id: 5,
-    name: 'Campo Sneaker',
-    brand: 'Veja',
-    price: '£13,162.35',
-    originalPrice: '£15,254.38',
-    image: 'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=400&h=600&fit=crop',
-    subcategory: 'Sneakers',
-    rating: 4.9,
-    reviews: 203,
-    isTrending: true,
-    soldCount: 9,
-    timeFrame: '48 hrs',
-    colors: ['white', 'green'],
-    isNew: false,
-    onSale: true,
-  },
-  {
-    id: 6,
-    name: 'x REVOLVE Krista Sandal',
-    brand: 'Tony Bianco',
-    price: '£13,511.02',
-    originalPrice: null,
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=600&fit=crop',
-    subcategory: 'Sandals',
-    rating: 4.8,
-    reviews: 145,
-    isTrending: true,
-    soldCount: 20,
-    timeFrame: '48 hrs',
-    colors: ['white', 'black', 'nude'],
-    isNew: false,
-    onSale: false,
-  },
-  {
-    id: 7,
-    name: 'Handball Spezial',
-    brand: 'adidas Originals',
-    price: '£9,234.56',
-    originalPrice: null,
-    image: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400&h=600&fit=crop',
-    subcategory: 'Sneakers',
-    rating: 4.7,
-    reviews: 178,
-    isTrending: true,
-    soldCount: 12,
-    timeFrame: '48 hrs',
-    colors: ['brown', 'white'],
-    isNew: false,
-    onSale: false,
-  },
-  {
-    id: 8,
-    name: 'Classic Flip Flops',
-    brand: 'Havaianas',
-    price: '£2,145.67',
-    originalPrice: null,
-    image: 'https://images.unsplash.com/photo-1581553680321-4fffae59fcde?w=400&h=600&fit=crop',
-    subcategory: 'Sandals',
-    rating: 4.4,
-    reviews: 892,
-    isTrending: false,
-    soldCount: null,
-    timeFrame: null,
-    colors: ['black'],
-    isNew: false,
-    onSale: false,
-  },
-];
+type ApiProduct = {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  images: string[];
+  category: string;
+  subcategory?: string;
+  tags?: string[];
+  rating?: number;
+  reviewCount?: number;
+  createdAt?: string | Date;
+};
 
 const designers = ['All', 'adidas Originals', 'Asics', 'Steve Madden', 'Veja', 'Tony Bianco', 'Havaianas'];
 const sizes = ['All', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45'];
@@ -160,9 +33,29 @@ export default function ShoesPage() {
   const [selectedHeelHeight, setSelectedHeelHeight] = useState('All');
   const [sortBy, setSortBy] = useState('Featured');
   const [viewCount, setViewCount] = useState(500);
-  const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [items, setItems] = useState<ApiProduct[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const toggleFavorite = (productId: number) => {
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/products?category=shoes', { cache: 'no-store' });
+        const data = await res.json();
+        const list: ApiProduct[] = data.data ?? data;
+        if (mounted) setItems(list);
+      } catch (e) {
+        console.error('Failed to fetch shoes', e);
+        if (mounted) setItems([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false };
+  }, []);
+
+  const toggleFavorite = (productId: string) => {
     const newFavorites = new Set(favorites);
     if (newFavorites.has(productId)) {
       newFavorites.delete(productId);
@@ -173,23 +66,24 @@ export default function ShoesPage() {
   };
 
   // Filter and sort products
-  const filteredProducts = shoeProducts
+  const filteredProducts = items
     .filter(product => {
-      if (selectedDesigner !== 'All' && product.brand !== selectedDesigner) return false;
-      if (selectedColor !== 'All' && !product.colors.some(color => 
-        color.toLowerCase().includes(selectedColor.toLowerCase()))) return false;
+      // Designer filter mapped to first tag (if any)
+      const brand = (product.tags && product.tags[0]) || '';
+      if (selectedDesigner !== 'All' && brand !== selectedDesigner) return false;
+      // Color filter skipped (no colors in API)
       return true;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case 'Price: Low to High':
-          return parseFloat(a.price.replace(/[£,]/g, '')) - parseFloat(b.price.replace(/[£,]/g, ''));
+          return a.price - b.price;
         case 'Price: High to Low':
-          return parseFloat(b.price.replace(/[£,]/g, '')) - parseFloat(a.price.replace(/[£,]/g, ''));
+          return b.price - a.price;
         case 'Most Popular':
-          return b.reviews - a.reviews;
+          return (b.reviewCount || 0) - (a.reviewCount || 0);
         case 'Newest':
-          return a.isNew ? -1 : 1;
+          return (new Date(b.createdAt || 0).getTime()) - (new Date(a.createdAt || 0).getTime());
         default:
           return 0;
       }
@@ -203,7 +97,7 @@ export default function ShoesPage() {
         {/* Results Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="text-sm text-gray-600">
-            <strong className="text-black">{filteredProducts.length.toLocaleString()} ITEMS</strong>
+            <strong className="text-black">{loading ? 'Loading...' : `${filteredProducts.length.toLocaleString()} ITEMS`}</strong>
           </div>
           
           <div className="flex items-center gap-4">
@@ -268,37 +162,16 @@ export default function ShoesPage() {
                 {/* Product Image */}
                 <div className="relative aspect-square overflow-hidden bg-gray-100">
                   <Image
-                    src={product.image}
+                    src={(product.images && product.images[0]) || 'https://placehold.co/600x600?text=No+Image'}
                     alt={product.name}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                     sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   />
                   
-                  {/* Trending/Status Badge */}
-                  {(product.isTrending || product.inDemand) && (
-                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1">
-                      <div className="flex items-center gap-1">
-                        {product.isTrending && <TrendingUp className="h-3 w-3 text-orange-500" />}
-                        {product.inDemand && <Flame className="h-3 w-3 text-red-500" />}
-                        <span className="text-xs font-semibold text-gray-900">
-                          {product.isTrending ? 'TRENDING NOW!' : 'IN DEMAND!'}
-                        </span>
-                      </div>
-                      {product.soldCount && (
-                        <div className="text-xs text-gray-600 mt-0.5">
-                          Sold {product.soldCount} times in the last {product.timeFrame}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  {/* Badges intentionally omitted for API-backed products */}
 
-                  {/* Best Seller Badge */}
-                  {product.isBestSeller && (
-                    <div className="absolute top-3 left-3 bg-black text-white text-xs font-bold px-2 py-1 rounded">
-                      BEST SELLER
-                    </div>
-                  )}
+                  {/* Best Seller Badge intentionally omitted */}
 
                   {/* Quick View Button */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10">
@@ -311,41 +184,21 @@ export default function ShoesPage() {
 
                 {/* Product Info */}
                 <div className="p-4">
-                  <div className="text-xs text-gray-600 mb-1">{product.brand}</div>
+                  <div className="text-xs text-gray-600 mb-1">{(product.tags && product.tags[0]) || '—'}</div>
                   <h3 className="font-medium text-gray-900 mb-2 group-hover:text-rose-600 transition-colors line-clamp-2">
                     {product.name}
                   </h3>
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-gray-900">{product.price}</span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
+                      <span className="font-bold text-gray-900">${product.price.toFixed(2)}</span>
+                      {product.originalPrice !== undefined && (
+                        <span className="text-sm text-gray-500 line-through">${product.originalPrice}</span>
                       )}
                     </div>
                   </div>
 
-                  {/* Color Options */}
-                  {product.colors.length > 1 && (
-                    <div className="flex items-center gap-1 mt-2">
-                      {product.colors.map((color, index) => (
-                        <div
-                          key={index}
-                          className={`w-4 h-4 rounded-full border border-gray-300 ${
-                            color === 'white' ? 'bg-white' :
-                            color === 'black' ? 'bg-black' :
-                            color === 'navy' ? 'bg-blue-900' :
-                            color === 'brown' ? 'bg-amber-800' :
-                            color === 'gray' ? 'bg-gray-400' :
-                            color === 'tan' ? 'bg-yellow-600' :
-                            color === 'green' ? 'bg-green-600' :
-                            color === 'nude' ? 'bg-rose-200' :
-                            'bg-gray-300'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  {/* Color Options intentionally omitted */}
                 </div>
               </div>
             </div>

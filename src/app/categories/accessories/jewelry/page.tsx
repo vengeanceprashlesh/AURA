@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Sparkles, Heart } from 'lucide-react';
+import ProductGrid from '@/components/ProductGrid';
 
 const JewelryPage = () => {
   const categories = [
@@ -25,25 +26,6 @@ const JewelryPage = () => {
     },
   ];
 
-  const featuredJewelry = [
-    {
-      id: 1,
-      name: 'Gold Chain Necklace',
-      price: 68.99,
-      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=300&h=400&fit=crop',
-      isNew: true,
-      onSale: false
-    },
-    {
-      id: 2,
-      name: 'Pearl Drop Earrings',
-      price: 45.99,
-      originalPrice: 65.99,
-      image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=300&h=400&fit=crop',
-      isNew: false,
-      onSale: true
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-yellow-50">
@@ -130,56 +112,15 @@ const JewelryPage = () => {
 
         {/* Featured Products - Mobile Responsive */}
         <section className="mb-8 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center sm:text-left flex items-center justify-center sm:justify-start">
+          <div className="flex items-center mb-6 sm:mb-8 justify-center sm:justify-start">
             <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-amber-500 mr-2" />
-            Featured Jewelry
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-            {featuredJewelry.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group border-l-4 border-amber-400">
-                <div className="relative h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-amber-50 to-yellow-50 overflow-hidden">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  {item.isNew && (
-                    <div className="absolute top-2 left-2 bg-gradient-to-r from-amber-400 to-yellow-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-lg">
-                      NEW
-                    </div>
-                  )}
-                  {item.onSale && (
-                    <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-lg">
-                      SALE
-                    </div>
-                  )}
-                  <div className="absolute top-2 right-2">
-                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <Heart className="w-4 h-4 text-amber-500 hover:text-red-500" />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">{item.name}</h3>
-                  <div className="flex items-center justify-between">
-                    {item.onSale && item.originalPrice ? (
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-red-600">${item.price}</span>
-                        <span className="text-sm text-gray-500 line-through">${item.originalPrice}</span>
-                      </div>
-                    ) : (
-                      <span className="text-lg font-bold text-amber-600">${item.price}</span>
-                    )}
-                    <button className="px-4 py-2 bg-gradient-to-r from-amber-400 to-yellow-500 text-white text-sm rounded-lg hover:from-amber-500 hover:to-yellow-600 transition-all duration-300">
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
+          <ProductGrid 
+            category="jewelry" 
+            title="Jewelry"
+            emptyMessage="No jewelry available. Add some jewelry in the admin panel!"
+            className=""
+          />
         </section>
 
         {/* Filters Section - Mobile Responsive */}

@@ -3,96 +3,74 @@
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import ProductCard from '@/components/ui/ProductCard';
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 
-// Mock data for new arrivals
-const mockProducts = [
-  {
-    id: '1',
-    name: 'Elegant Silk Blouse',
-    category: 'Women\'s Tops',
-    price: 129.99,
-    originalPrice: 159.99,
-    image: 'https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=400&h=600&fit=crop&crop=faces',
-    rating: 4.8,
-    reviewCount: 24,
-    isNew: true,
-    isSale: true,
-  },
-  {
-    id: '2',
-    name: 'Minimalist Wool Coat',
-    category: 'Outerwear',
-    price: 299.99,
-    image: 'https://images.unsplash.com/photo-1591369867040-6bafcf5e2cb9?w=400&h=600&fit=crop&crop=faces',
-    rating: 4.9,
-    reviewCount: 18,
-    isNew: true,
-  },
-  {
-    id: '3',
-    name: 'Classic Denim Jacket',
-    category: 'Jackets',
-    price: 89.99,
-    originalPrice: 110.99,
-    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=600&fit=crop&crop=faces',
-    rating: 4.6,
-    reviewCount: 32,
-    isNew: true,
-    isSale: true,
-  },
-  {
-    id: '4',
-    name: 'Flowy Summer Dress',
-    category: 'Dresses',
-    price: 149.99,
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=600&fit=crop&crop=faces',
-    rating: 4.7,
-    reviewCount: 41,
-    isNew: true,
-  },
-  {
-    id: '5',
-    name: 'Leather Crossbody Bag',
-    category: 'Accessories',
-    price: 189.99,
-    originalPrice: 229.99,
-    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=600&fit=crop&crop=faces',
-    rating: 4.9,
-    reviewCount: 15,
-    isNew: true,
-    isSale: true,
-  },
-  {
-    id: '6',
-    name: 'Cashmere Sweater',
-    category: 'Knitwear',
-    price: 199.99,
-    image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=600&fit=crop&crop=faces',
-    rating: 4.8,
-    reviewCount: 27,
-    isNew: true,
-  },
-];
+type ApiProduct = {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  originalPrice?: number;
+  images: string[];
+  category: string;
+  tags?: string[];
+  inStock?: boolean;
+  stockQuantity?: number;
+  rating?: number;
+  reviewCount?: number;
+  featured?: boolean;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+};
 
 const NewArrivalsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [items, setItems] = useState<ApiProduct[]>([]);
+  const [loading, setLoading] = useState(true);
   const cardWidth = 320; // Width of one card + gap
-  const maxScroll = (mockProducts.length - 3) * cardWidth; // Show 3 cards at a time
   const x = useMotionValue(0);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/products', { cache: 'no-store' });
+        const json = await res.json();
+        const data: ApiProduct[] = json.data ?? json;
+        // Sort by createdAt desc, fallback to as-is
+        const sorted = [...data].sort((a, b) => {
+          const da = a.createdAt ? new Date(a.createdAt as any).getTime() : 0;
+          const db = b.createdAt ? new Date(b.createdAt as any).getTime() : 0;
+          return db - da;
+        });
+        if (mounted) setItems(sorted.slice(0, 12));
+      } catch (e) {
+        console.error('Failed to load products', e);
+        if (mounted) setItems([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const maxScroll = Math.max(0, (items.length - 3) * cardWidth); // Show 3 cards at a time
 
   const handleDragEnd = () => {
     const currentX = x.get();
     const closest = Math.round(currentX / -cardWidth);
-    const clampedIndex = Math.max(0, Math.min(closest, mockProducts.length - 3));
+    const clampedIndex = Math.max(0, Math.min(closest, Math.max(0, items.length - 3)));
     setCurrentIndex(clampedIndex);
   };
 
   const scroll = (direction: 'left' | 'right') => {
+    const limit = Math.max(0, items.length - 3);
     const newIndex = direction === 'left' 
       ? Math.max(0, currentIndex - 1)
-      : Math.min(mockProducts.length - 3, currentIndex + 1);
+      : Math.min(limit, currentIndex + 1);
     setCurrentIndex(newIndex);
   };
 
@@ -104,7 +82,6 @@ const NewArrivalsSection = () => {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
         staggerChildren: 0.1,
       },
     },
@@ -117,7 +94,6 @@ const NewArrivalsSection = () => {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
       },
     },
   };
@@ -153,7 +129,7 @@ const NewArrivalsSection = () => {
               className="p-3 border border-charcoal-200 rounded-full hover:border-dusty-rose-500 hover:text-dusty-rose-500 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              disabled={currentIndex === 0}
+              disabled={currentIndex === 0 || items.length <= 3}
             >
               <ChevronLeft className="h-5 w-5" />
             </motion.button>
@@ -162,7 +138,7 @@ const NewArrivalsSection = () => {
               className="p-3 border border-charcoal-200 rounded-full hover:border-dusty-rose-500 hover:text-dusty-rose-500 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              disabled={currentIndex >= mockProducts.length - 3}
+              disabled={currentIndex >= Math.max(0, items.length - 3)}
             >
               <ChevronRight className="h-5 w-5" />
             </motion.button>
@@ -195,9 +171,9 @@ const NewArrivalsSection = () => {
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           style={{ x }}
         >
-          {mockProducts.map((product, index) => (
+          {(loading ? [] : items).map((product, index) => (
             <motion.div 
-              key={product.id} 
+              key={product.id}
               className="flex-shrink-0 w-80"
               variants={{
                 hidden: { opacity: 0, scale: 0.9 },
@@ -211,7 +187,18 @@ const NewArrivalsSection = () => {
                 },
               }}
             >
-              <ProductCard {...product} />
+              <ProductCard 
+                id={product.id}
+                name={product.name}
+                category={product.category}
+                price={product.price}
+                originalPrice={product.originalPrice}
+                image={(product.images && product.images[0]) || 'https://placehold.co/600x800?text=No+Image'}
+                rating={product.rating || 0}
+                reviewCount={product.reviewCount || 0}
+                isNew={Boolean(product.createdAt && (Date.now() - new Date(product.createdAt as any).getTime()) < 1000 * 60 * 60 * 24 * 30)}
+                isSale={product.originalPrice !== undefined && product.originalPrice > product.price}
+              />
             </motion.div>
           ))}
         </motion.div>
@@ -240,7 +227,7 @@ const NewArrivalsSection = () => {
           className="flex justify-center gap-2 mt-6"
           variants={itemVariants}
         >
-          {Array.from({ length: Math.max(1, mockProducts.length - 2) }).map((_, index) => (
+          {Array.from({ length: Math.max(1, Math.max(0, items.length - 2)) }).map((_, index) => (
             <motion.button
               key={index}
               className={`w-2 h-2 rounded-full transition-colors ${

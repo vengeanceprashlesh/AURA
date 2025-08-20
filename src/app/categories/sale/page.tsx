@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Tag, Percent } from 'lucide-react';
+import ProductGrid from '@/components/ProductGrid';
 
 export default function SalePage() {
   const featuredItem = {
@@ -122,6 +123,16 @@ export default function SalePage() {
               </div>
             ))}
           </div>
+        </section>
+
+        {/* Sale Products */}
+        <section className="mb-16">
+          <ProductGrid 
+            category="sale" 
+            title="Sale Items"
+            emptyMessage="No sale items available at the moment. Check back soon for great deals!"
+            className=""
+          />
         </section>
 
         <section className="mt-16 text-center bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-12">

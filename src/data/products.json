@@ -1,0 +1,18 @@
+[
+  {
+    "id": "16c11a13-9a10-4279-aa4b-5ac4a51ce8e8",
+    "rating": 0,
+    "reviewCount": 0,
+    "featured": false,
+    "createdAt": "2025-08-20T08:52:06.734Z",
+    "updatedAt": "2025-08-20T08:52:06.734Z",
+    "name": "df",
+    "description": "",
+    "price": 45,
+    "images": [],
+    "category": "accessories",
+    "tags": [],
+    "inStock": true,
+    "stockQuantity": 5465
+  }
+]

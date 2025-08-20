@@ -1,63 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Grid, List, Heart, Star } from 'lucide-react';
 
-// Sample clothing products - in real app would come from API
-const clothingProducts = [
-  {
-    id: 1,
-    name: 'Elegant Silk Blouse',
-    subcategory: 'Tops',
-    price: 129.99,
-    originalPrice: 159.99,
-    image: 'https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=400&h=600&fit=crop&crop=faces',
-    brand: 'Elegant Co',
-    rating: 4.8,
-    reviews: 24,
-    isNew: true,
-    onSale: true,
-  },
-  {
-    id: 2,
-    name: 'High-Waist Denim Jeans',
-    subcategory: 'Bottoms',
-    price: 89.99,
-    image: 'https://images.unsplash.com/photo-1582418702059-97ebafb35d09?w=400&h=600&fit=crop&crop=faces',
-    brand: 'Denim Dreams',
-    rating: 4.6,
-    reviews: 156,
-    isNew: false,
-    onSale: false,
-  },
-  {
-    id: 6,
-    name: 'Cozy Knit Sweater',
-    subcategory: 'Tops',
-    price: 79.99,
-    image: 'https://images.unsplash.com/photo-1591369867040-6bafcf5e2cb9?w=400&h=600&fit=crop&crop=faces',
-    brand: 'Cozy Co',
-    rating: 4.5,
-    reviews: 112,
-    isNew: false,
-    onSale: false,
-  },
-  {
-    id: 8,
-    name: 'Wide-Leg Trousers',
-    subcategory: 'Bottoms',
-    price: 119.99,
-    originalPrice: 149.99,
-    image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=600&fit=crop&crop=faces',
-    brand: 'Modern Fit',
-    rating: 4.6,
-    reviews: 78,
-    isNew: true,
-    onSale: true,
-  },
-];
+type ApiProduct = {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  originalPrice?: number;
+  images: string[];
+  category: string;
+  subcategory?: string;
+  tags?: string[];
+  rating?: number;
+  reviewCount?: number;
+  createdAt?: string | Date;
+};
 
 const subcategories = [
   { name: 'All', value: '' },
@@ -69,20 +30,40 @@ const subcategories = [
 export default function ClothingPage() {
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [sortBy, setSortBy] = useState('featured');
+  const [items, setItems] = useState<ApiProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/products?category=clothing', { cache: 'no-store' });
+        const data = await res.json();
+        const list: ApiProduct[] = data.data ?? data; // support either {data:[]} or []
+        if (mounted) setItems(list);
+      } catch (e) {
+        console.error('Failed to fetch clothing products', e);
+        if (mounted) setItems([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false };
+  }, []);
   
   // Filter and sort products
-  const filteredProducts = clothingProducts
+  const filteredProducts = items
     .filter(product => !selectedSubcategory || product.subcategory === selectedSubcategory)
     .sort((a, b) => {
       switch (sortBy) {
         case 'newest':
-          return a.isNew ? -1 : 1;
+          return (new Date(b.createdAt || 0).getTime()) - (new Date(a.createdAt || 0).getTime());
         case 'price-asc':
           return a.price - b.price;
         case 'price-desc':
           return b.price - a.price;
         case 'popular':
-          return b.reviews - a.reviews;
+          return (b.reviewCount || 0) - (a.reviewCount || 0);
         default:
           return 0;
       }
@@ -182,7 +163,7 @@ export default function ClothingPage() {
             <div className="flex items-center justify-between mb-6 bg-white rounded-lg p-4 shadow-sm border border-beige-200">
               <div className="flex items-center gap-4">
                 <span className="text-charcoal-700">
-                  {filteredProducts.length} products
+                  {loading ? 'Loading...' : `${filteredProducts.length} products`}
                 </span>
               </div>
               
@@ -209,19 +190,19 @@ export default function ClothingPage() {
                   <div className="bg-white rounded-lg shadow-sm border border-beige-200 overflow-hidden hover:shadow-md transition-shadow">
                     <div className="relative aspect-[3/4] overflow-hidden">
                       <Image
-                        src={product.image}
+                        src={(product.images && product.images[0]) || 'https://placehold.co/600x800?text=No+Image'}
                         alt={product.name}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      {product.isNew && (
+                      {product.createdAt && (Date.now() - new Date(product.createdAt).getTime()) < 1000*60*60*24*30 && (
                         <div className="absolute top-2 left-2">
                           <span className="bg-dusty-rose-500 text-white text-xs font-semibold px-2 py-1 rounded">
                             NEW
                           </span>
                         </div>
                       )}
-                      {product.onSale && (
+                      {product.originalPrice !== undefined && product.originalPrice > product.price && (
                         <div className="absolute top-2 right-2">
                           <span className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
                             SALE
@@ -234,11 +215,11 @@ export default function ClothingPage() {
                     </div>
                     
                     <div className="p-4">
-                      <div className="text-xs text-charcoal-500 mb-1">{product.brand}</div>
+                      <div className="text-xs text-charcoal-500 mb-1">{(product as any).brand || (product.tags && product.tags[0]) || '—'}</div>
                       <h3 className="font-medium text-charcoal-900 mb-2 group-hover:text-dusty-rose-500 transition-colors">
                         {product.name}
                       </h3>
-                      <div className="text-xs text-charcoal-600 mb-2">{product.subcategory}</div>
+                      <div className="text-xs text-charcoal-600 mb-2">{product.subcategory || '—'}</div>
                       
                       {/* Rating */}
                       <div className="flex items-center gap-1 mb-2">
@@ -246,18 +227,18 @@ export default function ClothingPage() {
                           {[...Array(5)].map((_, i) => (
                             <Star 
                               key={i} 
-                              className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-charcoal-200'}`} 
+                              className={`h-3 w-3 ${i < Math.floor(product.rating || 0) ? 'text-yellow-400 fill-current' : 'text-charcoal-200'}`} 
                             />
                           ))}
                         </div>
-                        <span className="text-xs text-charcoal-500">({product.reviews})</span>
+                        <span className="text-xs text-charcoal-500">({product.reviewCount || 0})</span>
                       </div>
 
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-charcoal-900">
                           ${product.price}
                         </span>
-                        {product.originalPrice && (
+                        {product.originalPrice !== undefined && (
                           <span className="text-sm text-charcoal-500 line-through">
                             ${product.originalPrice}
                           </span>

@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, ShoppingBag, Heart } from 'lucide-react';
+import ProductGrid from '@/components/ProductGrid';
 
 const BagsPage = () => {
   const categories = [
@@ -25,25 +26,6 @@ const BagsPage = () => {
     },
   ];
 
-  const featuredBags = [
-    {
-      id: 1,
-      name: 'Classic Leather Tote',
-      price: 189.99,
-      originalPrice: 229.99,
-      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=400&fit=crop',
-      isNew: false,
-      onSale: true
-    },
-    {
-      id: 2,
-      name: 'Urban Backpack',
-      price: 149.99,
-      image: 'https://images.unsplash.com/photo-1622260614153-03223fb72052?w=300&h=400&fit=crop',
-      isNew: true,
-      onSale: false
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
@@ -125,55 +107,12 @@ const BagsPage = () => {
 
         {/* Featured Products - Mobile Responsive */}
         <section className="mb-8 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center sm:text-left">
-            Featured Bags
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-            {featuredBags.map((bag) => (
-              <div key={bag.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                <div className="relative h-48 sm:h-56 lg:h-64 bg-gray-100 overflow-hidden">
-                  <Image
-                    src={bag.image}
-                    alt={bag.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  {bag.isNew && (
-                    <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 text-xs font-bold rounded-full">
-                      NEW
-                    </div>
-                  )}
-                  {bag.onSale && (
-                    <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-full">
-                      SALE
-                    </div>
-                  )}
-                  <div className="absolute top-2 right-2">
-                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <Heart className="w-4 h-4 text-gray-600 hover:text-red-500" />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">{bag.name}</h3>
-                  <div className="flex items-center justify-between">
-                    {bag.onSale && bag.originalPrice ? (
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-red-600">${bag.price}</span>
-                        <span className="text-sm text-gray-500 line-through">${bag.originalPrice}</span>
-                      </div>
-                    ) : (
-                      <span className="text-lg font-bold text-amber-600">${bag.price}</span>
-                    )}
-                    <button className="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700 transition-colors">
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ProductGrid 
+            category="bags" 
+            title="Bags"
+            emptyMessage="No bags available. Add some bags in the admin panel!"
+            className=""
+          />
         </section>
 
         {/* Filters Section - Mobile Responsive */}

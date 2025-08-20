@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Heart, TrendingUp, Flame, Eye } from 'lucide-react';
+import type { Product } from '@/types';
 
-// Sample accessories products based on the screenshots
-const accessoryProducts = [
+// Sample accessories products based on the screenshots (fallback)
+const sampleAccessoryProducts = [
   {
     id: 1,
     name: 'Rolex GMT-Master II Steel Pepsi Bezel Automatic Dial Watch',
@@ -153,29 +154,7 @@ const accessoryProducts = [
   },
 ];
 
-const sidebarCategories = [
-  { name: 'View All', href: '/categories/accessories', isActive: true },
-  { name: 'Active', href: '/categories/accessories/active' },
-  { name: 'Active Accessories', href: '/categories/accessories/active-accessories' },
-  { name: 'Bags', href: '/categories/accessories/bags' },
-  { name: 'Belts', href: '/categories/accessories/belts' },
-  { name: 'Gloves', href: '/categories/accessories/gloves' },
-  { name: 'Hair Accessories', href: '/categories/accessories/hair-accessories' },
-  { name: 'Hats', href: '/categories/accessories/hats' },
-  { name: 'Hats & Hair Accessories', href: '/categories/accessories/hats-hair' },
-  { name: 'Home', href: '/categories/accessories/home' },
-  { name: 'Jewelry', href: '/categories/accessories/jewelry' },
-  { name: 'Keychains & Bag Charms', href: '/categories/accessories/keychains' },
-  { name: 'Lifestyle & Gifts', href: '/categories/accessories/lifestyle' },
-  { name: 'Pre-Owned', href: '/categories/accessories/pre-owned' },
-  { name: 'Protective Face Masks', href: '/categories/accessories/masks' },
-  { name: 'Scarves', href: '/categories/accessories/scarves' },
-  { name: 'Socks', href: '/categories/accessories/socks' },
-  { name: 'Sunglasses & Eyewear', href: '/categories/accessories/sunglasses' },
-  { name: 'Tech Accessories', href: '/categories/accessories/tech' },
-  { name: 'Travel', href: '/categories/accessories/travel' },
-  { name: 'Water Bottles', href: '/categories/accessories/water-bottles' },
-];
+ 
 
 const designers = ['Designer', 'Le Specs', 'Emi Jay', 'Polo Ralph Lauren', 'FWRD Renew', 'lack of Color', 'peter do garments'];
 const sizes = ['Size', 'XS', 'S', 'M', 'L', 'XL', 'One Size'];
@@ -189,9 +168,56 @@ export default function AccessoriesPage() {
   const [selectedPrice, setSelectedPrice] = useState('Price');
   const [sortBy, setSortBy] = useState('Featured');
   const [viewCount, setViewCount] = useState(500);
-  const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [accessoryProducts, setAccessoryProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const toggleFavorite = (productId: number) => {
+  // Fetch products from API
+  useEffect(() => {
+    async function fetchAccessories() {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/products?category=accessories');
+        if (res.ok) {
+          const data = await res.json();
+          setAccessoryProducts(data.data || []);
+        } else {
+          // Fallback to sample data if API fails
+          setAccessoryProducts(transformSampleProducts());
+        }
+      } catch (err) {
+        setError('Failed to load products');
+        // Fallback to sample data
+        setAccessoryProducts(transformSampleProducts());
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAccessories();
+  }, []);
+
+  // Transform sample products to match Product type
+  const transformSampleProducts = () => {
+    return sampleAccessoryProducts.map(product => ({
+      id: String(product.id),
+      name: product.name,
+      description: '',
+      price: parseFloat(product.price.replace(/[₹,]/g, '')),
+      images: [product.image],
+      category: 'accessories',
+      tags: [],
+      inStock: true,
+      stockQuantity: 10,
+      rating: 0,
+      reviewCount: 0,
+      featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }));
+  };
+
+  const toggleFavorite = (productId: string) => {
     const newFavorites = new Set(favorites);
     if (newFavorites.has(productId)) {
       newFavorites.delete(productId);
@@ -204,224 +230,144 @@ export default function AccessoriesPage() {
   // Filter and sort products
   const filteredProducts = accessoryProducts
     .filter(product => {
-      if (selectedDesigner !== 'Designer' && product.brand !== selectedDesigner) return false;
-      if (selectedColor !== 'Color' && product.colors.length > 0 && !product.colors.some(color => 
-        color.toLowerCase().includes(selectedColor.toLowerCase()))) return false;
+      // Add any filtering logic here
       return true;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case 'Price: Low to High':
-          return parseFloat(a.price.replace(/[₹,]/g, '')) - parseFloat(b.price.replace(/[₹,]/g, ''));
+          return a.price - b.price;
         case 'Price: High to Low':
-          return parseFloat(b.price.replace(/[₹,]/g, '')) - parseFloat(a.price.replace(/[₹,]/g, ''));
-        case 'Most Popular':
-          return (b.soldCount || 0) - (a.soldCount || 0);
+          return b.price - a.price;
         case 'Newest':
-          return a.isNew ? -1 : 1;
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         default:
           return 0;
       }
     });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-black mb-4">ACCESSORIES</h1>
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-light text-gray-800 mb-4 tracking-wide">Accessories</h1>
+          <div className="flex justify-center">
+            <div className="w-16 h-0.5 bg-gradient-to-r from-rose-400 to-pink-400"></div>
+          </div>
         </div>
 
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <div className="w-64 flex-shrink-0">
-            <div className="bg-white rounded-lg p-6">
-              <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">CATEGORY</h3>
-              <nav className="space-y-2">
-                {sidebarCategories.map((category) => (
-                  <Link
-                    key={category.name}
-                    href={category.href}
-                    className={`block text-sm transition-colors ${
-                      category.isActive 
-                        ? 'text-black font-medium' 
-                        : 'text-gray-600 hover:text-black'
-                    }`}
-                  >
-                    {category.name}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-          </div>
-
+        <div>
           {/* Main Product Area */}
-          <div className="flex-1">
+          <div className="w-full">
 
-            {/* Results Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="text-sm text-gray-600">
-                <strong className="text-black">{filteredProducts.length.toLocaleString()} ITEMS</strong>
-              </div>
-              
-              <div className="flex items-center gap-4">
-                {/* Sort By */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">Sort By</span>
-                  <div className="relative">
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="appearance-none bg-white border border-gray-300 rounded px-3 py-1 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    >
-                      <option value="Featured">Featured</option>
-                      <option value="Newest">Newest</option>
-                      <option value="Price: Low to High">Price: Low to High</option>
-                      <option value="Price: High to Low">Price: High to Low</option>
-                      <option value="Most Popular">Most Popular</option>
-                    </select>
-                    <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 rotate-90 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
 
-                {/* View Count */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">View</span>
-                  <div className="relative">
-                    <select
-                      value={viewCount}
-                      onChange={(e) => setViewCount(Number(e.target.value))}
-                      className="appearance-none bg-white border border-gray-300 rounded px-3 py-1 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
-                    >
-                      <option value={100}>100</option>
-                      <option value={200}>200</option>
-                      <option value={500}>500</option>
-                      <option value={1000}>1000</option>
-                    </select>
-                    <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 rotate-90 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
+            {/* Loading State */}
+            {loading && (
+              <div className="flex items-center justify-center py-12">
+                <div className="flex items-center space-x-2 text-gray-600">
+                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                  </svg>
+                  <span>Loading accessories...</span>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Products Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredProducts.slice(0, viewCount).map((product) => (
-                <div key={product.id} className="group cursor-pointer">
-                  <div className="relative bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                    {/* Wishlist Button */}
-                    <button 
-                      onClick={() => toggleFavorite(product.id)}
-                      className="absolute top-3 right-3 z-20 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
-                    >
-                      <Heart 
-                        className={`h-4 w-4 transition-colors ${
-                          favorites.has(product.id) 
-                            ? 'fill-red-500 text-red-500' 
-                            : 'text-gray-400 hover:text-red-500'
-                        }`}
-                      />
-                    </button>
-
-                    {/* Product Image */}
-                    <div className="relative aspect-square overflow-hidden bg-gray-100">
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      />
-                      
-                      {/* Trending/Status Badge */}
-                      {product.isTrending && (
-                        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1">
-                          <div className="flex items-center gap-1">
-                            <TrendingUp className="h-3 w-3 text-orange-500" />
-                            <span className="text-xs font-semibold text-gray-900">
-                              TRENDING NOW!
-                            </span>
-                          </div>
-                          {product.soldCount && (
-                            <div className="text-xs text-gray-600 mt-0.5">
-                              Sold {product.soldCount} times in the last {product.timeFrame}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Product Badge */}
-                      {product.badge && (
-                        <div className="absolute top-3 left-3">
-                          <div className={`${product.badgeColor || 'bg-black'} text-white text-xs font-bold px-2 py-1 rounded`}>
-                            {product.badge}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Quick View Button */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10">
-                        <button className="bg-white text-gray-900 px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-100 transition-colors flex items-center gap-2">
-                          <Eye className="h-4 w-4" />
-                          QUICK VIEW
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="p-4">
-                      <div className="text-xs text-gray-600 mb-1">{product.brand}</div>
-                      <h3 className="font-medium text-gray-900 mb-2 group-hover:text-rose-600 transition-colors line-clamp-2">
-                        {product.name}
-                      </h3>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-gray-900">{product.price}</span>
-                          {product.originalPrice && (
-                            <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Color Options */}
-                      {product.colors.length > 0 && (
-                        <div className="flex items-center gap-1 mt-2">
-                          {product.colors.slice(0, 5).map((color, index) => (
-                            <div
-                              key={index}
-                              className={`w-4 h-4 rounded-full border border-gray-300 ${
-                                color === 'white' ? 'bg-white' :
-                                color === 'black' ? 'bg-black' :
-                                color === 'brown' ? 'bg-amber-800' :
-                                color === 'pink' ? 'bg-pink-300' :
-                                color === 'blue' ? 'bg-blue-400' :
-                                color === 'beige' ? 'bg-yellow-100' :
-                                color === 'cream' ? 'bg-yellow-50' :
-                                'bg-gray-300'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Load More Button */}
-            {filteredProducts.length > viewCount && (
-              <div className="text-center mt-12">
+            {/* Error State */}
+            {error && (
+              <div className="text-center py-12">
+                <p className="text-red-600 mb-4">{error}</p>
                 <button 
-                  onClick={() => setViewCount(prev => prev + 500)}
-                  className="bg-gray-900 text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                  onClick={() => window.location.reload()}
+                  className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
                 >
-                  Load More Accessories
+                  Retry
                 </button>
               </div>
             )}
+
+            {/* Products Grid */}
+            {!loading && !error && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {filteredProducts.length === 0 ? (
+                  <div className="col-span-full text-center py-20">
+                    <div className="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-light text-gray-800 mb-8">New Collection Coming Soon</h3>
+                    <Link href="/admin" className="inline-flex items-center px-8 py-3 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl">
+                      Add Products
+                    </Link>
+                  </div>
+                ) : (
+                  filteredProducts.map((product) => (
+                    <div key={product.id} className="group cursor-pointer">
+                      <div className="relative bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 border border-rose-100">
+                        {/* Wishlist Button */}
+                        <button 
+                          onClick={() => toggleFavorite(product.id)}
+                          className="absolute top-4 right-4 z-20 p-2.5 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
+                        >
+                          <Heart 
+                            className={`h-5 w-5 transition-colors ${
+                              favorites.has(product.id) 
+                                ? 'fill-rose-500 text-rose-500' 
+                                : 'text-gray-400 hover:text-rose-500'
+                            }`}
+                          />
+                        </button>
+
+                        {/* Product Image */}
+                        <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-rose-50 to-pink-50">
+                          <Image
+                            src={(product.images && product.images[0]) || 'https://placehold.co/400x400?text=No+Image'}
+                            alt={product.name}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-700"
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            unoptimized={(product.images && product.images[0]) ? false : true}
+                          />
+
+                          {/* Quick View Button */}
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/20">
+                            <button className="bg-white text-gray-800 px-6 py-3 rounded-full text-sm font-medium hover:bg-rose-50 transition-colors flex items-center gap-2 shadow-lg">
+                              <Eye className="h-4 w-4" />
+                              Quick View
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="p-6">
+                          <h3 className="font-medium text-gray-800 mb-3 group-hover:text-rose-600 transition-colors line-clamp-2 text-lg">
+                            {product.name}
+                          </h3>
+                          
+                          {product.description && (
+                            <p className="text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">{product.description}</p>
+                          )}
+                          
+                          <div className="flex items-center justify-between pt-2">
+                            <div>
+                              <span className="text-xl font-semibold text-gray-800">${product.price}</span>
+                            </div>
+                            <div className="text-xs text-rose-400 bg-rose-50 px-2 py-1 rounded-full">
+                              {product.stockQuantity} left
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
           </div>
         </div>
       </div>
