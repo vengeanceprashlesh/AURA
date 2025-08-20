@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { X, Heart, ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw } from 'lucide-react';
 import type { Product } from '@/types';
+import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 
 interface ProductModalProps {
   product: Product | null;
@@ -23,6 +25,9 @@ export default function ProductModal({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const { addItem, openCart } = useCart();
+  const { toggleItem, isInWishlist } = useWishlist();
 
   useEffect(() => {
     if (isOpen) {
@@ -58,6 +63,25 @@ export default function ProductModal({
 
   const handleQuantityChange = (change: number) => {
     setQuantity(prev => Math.max(1, Math.min(product.stockQuantity, prev + change)));
+  };
+
+  const handleAddToCart = async () => {
+    if (!product.inStock) return;
+    
+    setIsAddingToCart(true);
+    
+    try {
+      addItem(product, quantity, selectedSize);
+      
+      // Show success feedback
+      setTimeout(() => {
+        setIsAddingToCart(false);
+        openCart();
+      }, 500);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      setIsAddingToCart(false);
+    }
   };
 
   return (
@@ -210,25 +234,41 @@ export default function ProductModal({
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-4">
                   <button
-                    disabled={!product.inStock}
+                    onClick={handleAddToCart}
+                    disabled={!product.inStock || isAddingToCart}
                     className="w-full bg-gray-900 text-white py-4 rounded-xl font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    <ShoppingBag className="h-5 w-5" />
-                    {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                    {isAddingToCart ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                        </svg>
+                        Adding...
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag className="h-5 w-5" />
+                        {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                      </>
+                    )}
                   </button>
                   
                   <button
-                    onClick={() => onToggleFavorite?.(product.id)}
+                    onClick={() => {
+                      toggleItem(product);
+                      onToggleFavorite?.(product.id);
+                    }}
                     className="w-full border border-gray-300 py-4 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                   >
                     <Heart 
                       className={`h-5 w-5 ${
-                        isFavorite 
+                        isInWishlist(product.id) 
                           ? 'fill-rose-500 text-rose-500' 
                           : 'text-gray-600'
                       }`}
                     />
-                    {isFavorite ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                    {isInWishlist(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
                   </button>
                 </div>
 

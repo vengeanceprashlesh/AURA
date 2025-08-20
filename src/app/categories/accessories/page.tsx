@@ -5,6 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Heart, TrendingUp, Flame, Eye } from 'lucide-react';
 import type { Product } from '@/types';
+import ProductModal from '@/components/ProductModal';
+import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 
 // Sample accessories products based on the screenshots (fallback)
 const sampleAccessoryProducts = [
@@ -172,6 +175,9 @@ export default function AccessoriesPage() {
   const [accessoryProducts, setAccessoryProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { toggleItem, isInWishlist } = useWishlist();
 
   // Fetch products from API
   useEffect(() => {
@@ -225,6 +231,22 @@ export default function AccessoriesPage() {
       newFavorites.add(productId);
     }
     setFavorites(newFavorites);
+    
+    // Also update wishlist context
+    const product = accessoryProducts.find(p => p.id === productId);
+    if (product) {
+      toggleItem(product);
+    }
+  };
+
+  const openProductModal = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeProductModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
   };
 
   // Filter and sort products
@@ -306,16 +328,19 @@ export default function AccessoriesPage() {
                   </div>
                 ) : (
                   filteredProducts.map((product) => (
-                    <div key={product.id} className="group cursor-pointer">
+                    <div key={product.id} className="group cursor-pointer" onClick={() => openProductModal(product)}>
                       <div className="relative bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500 border border-rose-100">
                         {/* Wishlist Button */}
                         <button 
-                          onClick={() => toggleFavorite(product.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(product.id);
+                          }}
                           className="absolute top-4 right-4 z-20 p-2.5 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
                         >
                           <Heart 
                             className={`h-5 w-5 transition-colors ${
-                              favorites.has(product.id) 
+                              isInWishlist(product.id) 
                                 ? 'fill-rose-500 text-rose-500' 
                                 : 'text-gray-400 hover:text-rose-500'
                             }`}
@@ -335,7 +360,13 @@ export default function AccessoriesPage() {
 
                           {/* Quick View Button */}
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/20">
-                            <button className="bg-white text-gray-800 px-6 py-3 rounded-full text-sm font-medium hover:bg-rose-50 transition-colors flex items-center gap-2 shadow-lg">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openProductModal(product);
+                              }}
+                              className="bg-white text-gray-800 px-6 py-3 rounded-full text-sm font-medium hover:bg-rose-50 transition-colors flex items-center gap-2 shadow-lg"
+                            >
                               <Eye className="h-4 w-4" />
                               Quick View
                             </button>
@@ -371,6 +402,15 @@ export default function AccessoriesPage() {
           </div>
         </div>
       </div>
+
+      {/* Product Modal */}
+      <ProductModal
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={closeProductModal}
+        onToggleFavorite={toggleFavorite}
+        isFavorite={selectedProduct ? favorites.has(selectedProduct.id) : false}
+      />
     </div>
   );
 }

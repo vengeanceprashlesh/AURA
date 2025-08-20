@@ -4,13 +4,17 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Heart, ShoppingBag, User, Menu, X, Search, Phone, Mail, Sparkles, Crown, Gift, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useCartStore } from '@/store/cartStore';
+import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
+import SearchModal from '@/components/SearchModal';
 import { navigationCategories } from '@/data/categories';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const { totalItems, toggleCart } = useCartStore();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { totalItems, toggleCart } = useCart();
+  const { totalItems: wishlistCount } = useWishlist();
 
   // Women's fashion mobile menu
   const mobileMenuLinks = [
@@ -111,6 +115,7 @@ const Header = () => {
           <div className="flex items-center space-x-1 sm:space-x-2">
             {/* Search - Hidden on mobile */}
             <motion.button 
+              onClick={() => setIsSearchOpen(true)}
               className="hidden lg:flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group"
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
@@ -120,14 +125,27 @@ const Header = () => {
             </motion.button>
 
             {/* Wishlist - Hidden on small mobile */}
-            <motion.button 
-              className="hidden sm:flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group relative"
-              whileHover={{ scale: 1.05, y: -1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Heart className="h-4 sm:h-5 w-4 sm:w-5 group-hover:fill-current" />
-              <span className="sr-only">Wishlist</span>
-            </motion.button>
+            <Link href="/profile?tab=wishlist">
+              <motion.button 
+                className="hidden sm:flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group relative"
+                whileHover={{ scale: 1.05, y: -1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Heart className="h-4 sm:h-5 w-4 sm:w-5 group-hover:fill-current" />
+                {/* Wishlist badge */}
+                {wishlistCount > 0 && (
+                  <motion.span 
+                    className="absolute -top-0.5 sm:-top-1 -right-0.5 sm:-right-1 bg-gradient-to-r from-rose-500 to-rose-600 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center font-bold shadow-lg text-[10px] sm:text-xs"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    {wishlistCount > 99 ? '99+' : wishlistCount}
+                  </motion.span>
+                )}
+                <span className="sr-only">Wishlist</span>
+              </motion.button>
+            </Link>
 
             {/* Shopping Bag */}
             <motion.button 
@@ -152,14 +170,16 @@ const Header = () => {
             </motion.button>
 
             {/* User Account - Hidden on small mobile */}
-            <motion.button 
-              className="hidden sm:flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 group"
-              whileHover={{ scale: 1.05, y: -1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <User className="h-4 sm:h-5 w-4 sm:w-5" />
-              <span className="sr-only">Account</span>
-            </motion.button>
+            <Link href="/profile">
+              <motion.button 
+                className="hidden sm:flex items-center justify-center w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 group"
+                whileHover={{ scale: 1.05, y: -1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <User className="h-4 sm:h-5 w-4 sm:w-5" />
+                <span className="sr-only">Account</span>
+              </motion.button>
+            </Link>
 
             {/* Mobile menu button */}
             <motion.button
@@ -220,17 +240,25 @@ const Header = () => {
               className="mt-6 space-y-3"
             >
               {/* Search Button for Mobile */}
-              <button className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+              <button 
+                onClick={() => {
+                  setIsSearchOpen(true);
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+              >
                 <Search className="h-5 w-5" />
                 <span className="font-medium">Search Products</span>
               </button>
               
               {/* Account Button for Mobile */}
               <div className="sm:hidden">
-                <button className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                  <User className="h-5 w-5" />
-                  <span className="font-medium">My Account</span>
-                </button>
+                <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                  <button className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                    <User className="h-5 w-5" />
+                    <span className="font-medium">My Account</span>
+                  </button>
+                </Link>
               </div>
             </motion.div>
             
@@ -247,6 +275,12 @@ const Header = () => {
           </div>
         </motion.div>
       </div>
+      
+      {/* Search Modal */}
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+      />
     </header>
   );
 };
