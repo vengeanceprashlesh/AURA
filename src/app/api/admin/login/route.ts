@@ -1,7 +1,18 @@
 import { NextResponse } from 'next/server'
 import { validateCredentials, createSession } from '@/lib/auth'
 
+// Ensure this route runs on Node.js runtime (not Edge), so process.env works at runtime
+export const runtime = 'nodejs'
+
 export async function POST(req: Request) {
+  // TEMP DEBUG: confirm env visibility at route runtime
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[Route:/api/admin/login] ENV snapshot:', {
+      hasId: !!process.env.ADMIN_ID,
+      hasPlain: !!process.env.ADMIN_PASSWORD,
+      hasHash: !!process.env.ADMIN_PASSWORD_HASH,
+    })
+  }
   const body = await req.json().catch(() => ({})) as { id?: string; password?: string }
   const { id, password } = body
   if (!id || !password) {

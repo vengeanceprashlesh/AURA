@@ -43,12 +43,29 @@ export function createSession(id: string) {
 // If ADMIN_PASSWORD_HASH and optional ADMIN_SALT are provided, validate against hash (sha256).
 // Fallback to plain-text env comparison for local/dev.
 export function validateCredentials(id: string, password: string) {
-  const envId = process.env.ADMIN_ID
-  const hash = process.env.ADMIN_PASSWORD_HASH
-  const salt = process.env.ADMIN_SALT || ''
-  const plain = process.env.ADMIN_PASSWORD
+  const envId = process.env.ADMIN_ID?.trim()
+  const hash = process.env.ADMIN_PASSWORD_HASH?.trim()
+  const salt = (process.env.ADMIN_SALT || '').trim()
+  const plain = process.env.ADMIN_PASSWORD?.trim()
 
-  if (!envId) return false
+  // TEMP DEBUG: Verify envs are loaded at runtime (remove after verifying)
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[Auth] ENV loaded:', {
+      envId,
+      hasPlain: !!plain,
+      hasHash: !!hash,
+    })
+  }
+
+  // Development fallback: if env vars are missing in dev, allow default creds
+  if (!envId) {
+    if (process.env.NODE_ENV !== 'production') {
+      const fallbackId = 'admin'
+      const fallbackPass = 'admin@123'
+      return id === fallbackId && password === fallbackPass
+    }
+    return false
+  }
   if (hash) {
     const digest = crypto.createHash('sha256').update(password + salt).digest('hex')
     return id === envId && crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(hash))
