@@ -1,6 +1,6 @@
 Set these environment variables (e.g., in .env.local) before running the app:
 
-ADMIN_ID=
-ADMIN_PASSWORD=
+ADMIN_ID= Admin
+ADMIN_PASSWORD=  Admin@123
 
 In production, configure these securely in your hosting provider.
