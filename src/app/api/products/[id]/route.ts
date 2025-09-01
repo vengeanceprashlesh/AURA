@@ -1,20 +1,11 @@
 import { NextResponse } from 'next/server';
-import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../../../../../convex/_generated/api';
 import { Id } from '../../../../../convex/_generated/dataModel';
+import { getConvexClient } from '../../../../lib/convex-client';
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-
-function getConvexClient() {
-  const url = process.env.NEXT_PUBLIC_CONVEX_URL;
-  if (!url) {
-    console.error('NEXT_PUBLIC_CONVEX_URL environment variable is not set');
-    throw new Error('NEXT_PUBLIC_CONVEX_URL environment variable is not set');
-  }
-  return new ConvexHttpClient(url);
-}
 
 export async function DELETE(
   _req: Request,

@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  // External packages for server components
+  serverExternalPackages: ['convex'],
+  // Ensure API routes are not pre-rendered
+  trailingSlash: false,
   images: {
     remotePatterns: [
       {
