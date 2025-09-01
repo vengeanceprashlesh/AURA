@@ -18,23 +18,24 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { APP_CONFIG, getRandomRating, getRandomReviewCount } from '@/config/constants';
 import { useCartStore } from '@/store/cartStore';
 import { Product } from '@/types';
 
-// Mock product data - in a real app, this would come from an API
+// Dynamic product data - in a real app, this would come from an API
 const getProductData = (id: string) => ({
   id,
   name: 'Elegant Silk Blouse',
   category: 'Women\'s Tops',
-  price: 129.99,
-  originalPrice: 159.99,
+  price: 10799, // Price in INR
+  originalPrice: 13299, // Original price in INR
   description: 'A timeless silk blouse that effortlessly combines elegance and comfort. Made from premium mulberry silk, this piece features a classic cut with modern styling details. Perfect for both professional and casual settings.',
   features: [
-    '100% Premium Mulberry Silk',
+    APP_CONFIG.FEATURES.PREMIUM_MATERIALS,
     'Classic tailored fit',
     'Mother-of-pearl buttons',
     'Dry clean only',
-    'Made in Italy'
+    'Made in India'
   ],
   images: [
     'https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=600&h=800&fit=crop&crop=faces',
@@ -42,17 +43,17 @@ const getProductData = (id: string) => ({
     'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&h=800&fit=crop&crop=faces',
     'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&h=800&fit=crop&crop=faces'
   ],
-  sizes: ['XS', 'S', 'M', 'L', 'XL'],
+  sizes: APP_CONFIG.SIZES.CLOTHING,
   colors: [
     { name: 'Cream', value: '#F5F5DC', available: true },
     { name: 'Blush', value: '#FFC0CB', available: true },
     { name: 'Navy', value: '#1e3a8a', available: false },
     { name: 'Black', value: '#000000', available: true }
   ],
-  rating: 4.8,
-  reviewCount: 24,
+  rating: getRandomRating(),
+  reviewCount: getRandomReviewCount(),
   inStock: true,
-  stockQuantity: 15
+  stockQuantity: Math.floor(Math.random() * 50) + 5 // Random stock between 5-55
 });
 
 export function ProductPageClient({ productId }: { productId: string }) {
@@ -220,7 +221,7 @@ export function ProductPageClient({ productId }: { productId: string }) {
                   ))}
                 </div>
                 <span className="text-charcoal-600 text-sm">
-                  {product.rating} ({product.reviewCount} reviews)
+                  {product.rating.toFixed(1)} ({product.reviewCount} reviews)
                 </span>
               </div>
 
@@ -295,28 +296,8 @@ export function ProductPageClient({ productId }: { productId: string }) {
               </div>
             </div>
 
-            {/* Quantity & Actions */}
+            {/* Actions */}
             <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center border border-charcoal-200 rounded-lg">
-                  <button
-                    onClick={() => handleQuantityChange(-1)}
-                    className="p-2 hover:bg-beige-100 transition-colors"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <span className="px-4 py-2 font-medium">{quantity}</span>
-                  <button
-                    onClick={() => handleQuantityChange(1)}
-                    className="p-2 hover:bg-beige-100 transition-colors"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-                <span className="text-sm text-charcoal-600">
-                  {product.stockQuantity} items available
-                </span>
-              </div>
 
               <div className="flex gap-4">
                 <motion.button
@@ -359,25 +340,25 @@ export function ProductPageClient({ productId }: { productId: string }) {
 
             {/* Shipping & Returns */}
             <div className="border-t border-beige-200 pt-6 space-y-4">
-              <div className="flex items-start gap-3">
-                <Truck className="h-5 w-5 text-dusty-rose-500 mt-0.5" />
-                <div>
+                <div className="flex items-start gap-3">
+                  <Truck className="h-5 w-5 text-dusty-rose-500 mt-0.5" />
+                  <div>
                   <p className="font-medium text-charcoal-900">Free Shipping</p>
-                  <p className="text-sm text-charcoal-600">On orders over $100</p>
+                  <p className="text-sm text-charcoal-600">{APP_CONFIG.SHIPPING.FREE_SHIPPING_TEXT.replace('Free shipping on ', 'On ')}</p>
+                  </div>
                 </div>
-              </div>
               <div className="flex items-start gap-3">
                 <RotateCcw className="h-5 w-5 text-dusty-rose-500 mt-0.5" />
                 <div>
                   <p className="font-medium text-charcoal-900">Easy Returns</p>
-                  <p className="text-sm text-charcoal-600">30-day return policy</p>
+                  <p className="text-sm text-charcoal-600">{APP_CONFIG.POLICIES.RETURN_POLICY_TEXT}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Shield className="h-5 w-5 text-dusty-rose-500 mt-0.5" />
                 <div>
                   <p className="font-medium text-charcoal-900">Secure Payment</p>
-                  <p className="text-sm text-charcoal-600">SSL encrypted checkout</p>
+                  <p className="text-sm text-charcoal-600">{APP_CONFIG.FEATURES.SECURE_PAYMENT}</p>
                 </div>
               </div>
             </div>

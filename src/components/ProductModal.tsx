@@ -105,8 +105,8 @@ export default function ProductModal({
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-full">
             {/* Image Gallery */}
-            <div className="relative bg-gradient-to-br from-rose-50 to-pink-50">
-              <div className="aspect-square relative overflow-hidden">
+            <div className="relative bg-white">
+              <div className="aspect-[4/5] relative overflow-hidden">
                 <Image
                   src={images[selectedImageIndex]}
                   alt={product.name}
@@ -120,7 +120,7 @@ export default function ProductModal({
               {/* Image Thumbnails */}
               {images.length > 1 && (
                 <div className="absolute bottom-4 left-4 right-4">
-                  <div className="flex gap-2 overflow-x-auto">
+                  <div className="flex gap-2 overflow-x-auto bg-white/90 backdrop-blur-sm p-2 rounded-lg">
                     {images.map((image, index) => (
                       <button
                         key={index}
@@ -128,7 +128,7 @@ export default function ProductModal({
                         className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
                           index === selectedImageIndex 
                             ? 'border-rose-500' 
-                            : 'border-white/50 hover:border-white'
+                            : 'border-gray-200 hover:border-gray-400'
                         }`}
                       >
                         <Image

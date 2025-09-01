@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X, Search, TrendingUp, Clock, ArrowRight } from 'lucide-react';
 import type { Product } from '@/types';
+import { APP_CONFIG } from '@/config/constants';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -181,7 +182,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Search for products..."
+                placeholder={APP_CONFIG.UI_TEXT.COMMON.SEARCH_PLACEHOLDER}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => {

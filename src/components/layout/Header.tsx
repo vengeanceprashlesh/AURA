@@ -8,6 +8,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import SearchModal from '@/components/SearchModal';
 import { navigationCategories } from '@/data/categories';
+import { APP_CONFIG } from '@/config/constants';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -16,16 +17,8 @@ const Header = () => {
   const { totalItems, toggleCart } = useCart();
   const { totalItems: wishlistCount } = useWishlist();
 
-  // Women's fashion mobile menu
-  const mobileMenuLinks = [
-    { href: '/categories/new-today', label: 'New Today', featured: true },
-    { href: '/categories/dresses', label: 'Dresses' },
-    { href: '/categories/clothing', label: 'Clothing' },
-    { href: '/categories/shoes', label: 'Shoes' },
-    { href: '/categories/accessories', label: 'Accessories' },
-    { href: '/bestsellers', label: 'Bestsellers' },
-    { href: '/categories/sale', label: 'Sale' },
-  ];
+  // Get mobile menu links from configuration
+  const mobileMenuLinks = APP_CONFIG.NAVIGATION.MOBILE_MENU_LINKS;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -44,10 +37,10 @@ const Header = () => {
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 <div className="text-xl sm:text-2xl md:text-3xl font-serif font-bold bg-gradient-to-r from-rose-600 to-rose-500 bg-clip-text text-transparent tracking-wide">
-                  AURA
+                  {APP_CONFIG.STORE_NAME.toUpperCase()}
                 </div>
                 <div className="text-[7px] sm:text-[8px] md:text-[10px] text-gray-500 font-light tracking-[0.2em] -mt-1">
-                  MARKETPLACE
+                  {APP_CONFIG.STORE_SUBTITLE}
                 </div>
               </motion.div>
             </Link>
@@ -121,7 +114,7 @@ const Header = () => {
               whileTap={{ scale: 0.95 }}
             >
               <Search className="h-4 sm:h-5 w-4 sm:w-5" />
-              <span className="sr-only">Search</span>
+              <span className="sr-only">{APP_CONFIG.UI_TEXT.COMMON.SEARCH}</span>
             </motion.button>
 
             {/* Wishlist - Hidden on small mobile */}
@@ -143,7 +136,7 @@ const Header = () => {
                     {wishlistCount > 99 ? '99+' : wishlistCount}
                   </motion.span>
                 )}
-                <span className="sr-only">Wishlist</span>
+                <span className="sr-only">{APP_CONFIG.UI_TEXT.WISHLIST.TITLE}</span>
               </motion.button>
             </Link>
 
@@ -166,7 +159,7 @@ const Header = () => {
                   {totalItems > 99 ? '99+' : totalItems}
                 </motion.span>
               )}
-              <span className="sr-only">Shopping bag</span>
+              <span className="sr-only">{APP_CONFIG.UI_TEXT.CART.TITLE}</span>
             </motion.button>
 
             {/* User Account - Hidden on small mobile */}
@@ -177,7 +170,7 @@ const Header = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <User className="h-4 sm:h-5 w-4 sm:w-5" />
-                <span className="sr-only">Account</span>
+                <span className="sr-only">{APP_CONFIG.UI_TEXT.PROFILE.ACCOUNT_INFO}</span>
               </motion.button>
             </Link>
 
@@ -262,16 +255,6 @@ const Header = () => {
               </div>
             </motion.div>
             
-            {/* Enhanced Mobile CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="mt-6 p-4 bg-gradient-to-r from-rose-50 to-rose-100 rounded-lg text-center border border-rose-200"
-            >
-              <p className="text-sm text-rose-600 font-semibold mb-1">✨ Welcome to Aura!</p>
-              <p className="text-xs text-rose-500">Get 15% off your first order</p>
-            </motion.div>
           </div>
         </motion.div>
       </div>

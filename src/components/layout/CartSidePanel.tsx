@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Plus, Minus, ShoppingBag, Trash2 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { formatPrice } from '@/lib/utils';
+import { APP_CONFIG } from '@/config/constants';
 
 const CartSidePanel = () => {
   const { 
@@ -92,7 +93,7 @@ const CartSidePanel = () => {
                 <div className="flex items-center gap-3">
                   <ShoppingBag className="h-5 w-5 text-dusty-rose-500" />
                   <h2 className="font-heading text-lg font-semibold text-charcoal-900">
-                    Shopping Cart
+                    {APP_CONFIG.UI_TEXT.CART.TITLE}
                   </h2>
                   {totalItems > 0 && (
                     <span className="bg-dusty-rose-500 text-white text-xs px-2 py-1 rounded-full">
@@ -124,10 +125,10 @@ const CartSidePanel = () => {
                       <ShoppingBag className="h-8 w-8 text-charcoal-400" />
                     </div>
                     <h3 className="font-heading text-lg font-semibold text-charcoal-900 mb-2">
-                      Your cart is empty
+                      {APP_CONFIG.UI_TEXT.CART.EMPTY_MESSAGE}
                     </h3>
                     <p className="text-charcoal-600 mb-6">
-                      Add some items to get started!
+                      Start adding items to your cart!
                     </p>
                     <motion.button
                       onClick={closeCart}
@@ -135,7 +136,7 @@ const CartSidePanel = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      Continue Shopping
+                      {APP_CONFIG.UI_TEXT.CART.CONTINUE_SHOPPING}
                     </motion.button>
                   </motion.div>
                 ) : (

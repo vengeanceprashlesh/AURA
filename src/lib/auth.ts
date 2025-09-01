@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import crypto from 'crypto'
 
 export const ADMIN_COOKIE = 'admin_session'
+export const USER_COOKIE = 'user_session'
 
 // Create a signed session token with HMAC-SHA256. Payload contains id and exp.
 function sign(payload: Record<string, any>, secret: string) {
@@ -37,6 +38,14 @@ export function createSession(id: string) {
   const secret = process.env.ADMIN_SECRET || 'dev-secret'
   const eightHours = 1000 * 60 * 60 * 8
   const payload = { id, exp: Date.now() + eightHours }
+  return sign(payload, secret)
+}
+
+// Create a signed user session token (separate from admin). Uses same secret.
+export function createUserSession(id: string) {
+  const secret = process.env.ADMIN_SECRET || 'dev-secret'
+  const thirtyDays = 1000 * 60 * 60 * 24 * 30
+  const payload = { id, exp: Date.now() + thirtyDays }
   return sign(payload, secret)
 }
 

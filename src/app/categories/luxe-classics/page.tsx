@@ -9,8 +9,8 @@ const products = [
   {
     id: 1,
     name: "Elegant Silk Blouse",
-    price: 189.99,
-    originalPrice: 249.99,
+    price: 284.99, // $284.99 (was $189.99, increased by 1.5x)
+    originalPrice: 374.99, // $374.99 (was $249.99, increased by 1.5x)
     image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     rating: 4.8,
     reviews: 124,
@@ -20,7 +20,7 @@ const products = [
   {
     id: 2,
     name: "Classic Tailored Blazer",
-    price: 299.99,
+    price: 449.99, // $449.99 (was $299.99, increased by 1.5x)
     originalPrice: null,
     image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     rating: 4.9,
@@ -31,7 +31,7 @@ const products = [
   {
     id: 3,
     name: "Luxury Cashmere Sweater",
-    price: 349.99,
+    price: 524.99, // $524.99 (was $349.99, increased by 1.5x)
     originalPrice: null,
     image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     rating: 4.7,
@@ -42,8 +42,8 @@ const products = [
   {
     id: 4,
     name: "Designer Wool Coat",
-    price: 459.99,
-    originalPrice: 599.99,
+    price: 689.99, // $689.99 (was $459.99, increased by 1.5x)
+    originalPrice: 899.99, // $899.99 (was $599.99, increased by 1.5x)
     image: "https://images.unsplash.com/photo-1566479179817-b83216806cf1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     rating: 4.9,
     reviews: 98,
@@ -53,7 +53,7 @@ const products = [
   {
     id: 5,
     name: "Premium Leather Handbag",
-    price: 399.99,
+    price: 599.99, // $599.99 (was $399.99, increased by 1.5x)
     originalPrice: null,
     image: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     rating: 4.8,
@@ -64,8 +64,8 @@ const products = [
   {
     id: 6,
     name: "Timeless Pearl Necklace",
-    price: 189.99,
-    originalPrice: 229.99,
+    price: 284.99, // $284.99 (was $189.99, increased by 1.5x)
+    originalPrice: 344.99, // $344.99 (was $229.99, increased by 1.5x)
     image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     rating: 4.6,
     reviews: 67,
@@ -75,7 +75,7 @@ const products = [
   {
     id: 7,
     name: "Classic Luxury Boots",
-    price: 249.99,
+    price: 374.99, // $374.99 (was $249.99, increased by 1.5x)
     originalPrice: null,
     image: "/images/luxe.webp",
     rating: 4.9,

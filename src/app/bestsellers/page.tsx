@@ -9,8 +9,8 @@ export default function Bestsellers() {
     {
       id: 1,
       name: "The Perfect White Shirt",
-      price: "$89",
-      originalPrice: "$120",
+      price: "$134", // $134 (was $89, increased by 1.5x)
+      originalPrice: "$180", // $180 (was $120, increased by 1.5x)
       image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=400&h=600",
       badge: "#1 BESTSELLER",
       rating: 4.9,
@@ -21,8 +21,8 @@ export default function Bestsellers() {
     {
       id: 2,
       name: "Black Midi Slip Dress",
-      price: "$145",
-      originalPrice: "$195",
+      price: "$218", // $218 (was $145, increased by 1.5x)
+      originalPrice: "$293", // $293 (was $195, increased by 1.5x)
       image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=400&h=600",
       badge: "CUSTOMER FAVORITE",
       rating: 4.8,
@@ -33,8 +33,8 @@ export default function Bestsellers() {
     {
       id: 3,
       name: "High-Waisted Straight Jeans",
-      price: "$128",
-      originalPrice: "$165",
+      price: "$192", // $192 (was $128, increased by 1.5x)
+      originalPrice: "$248", // $248 (was $165, increased by 1.5x)
       image: "https://images.unsplash.com/photo-1506629905136-b5f3fde5ee30?auto=format&fit=crop&w=400&h=600",
       badge: "MOST LOVED",
       rating: 4.9,
@@ -45,8 +45,8 @@ export default function Bestsellers() {
     {
       id: 4,
       name: "Gold Chain Necklace Set",
-      price: "$78",
-      originalPrice: "$110",
+      price: "$117", // $117 (was $78, increased by 1.5x)
+      originalPrice: "$165", // $165 (was $110, increased by 1.5x)
       image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=400&h=600",
       badge: "VIRAL",
       rating: 4.7,
@@ -57,8 +57,8 @@ export default function Bestsellers() {
     {
       id: 5,
       name: "Structured Blazer",
-      price: "$189",
-      originalPrice: "$245",
+      price: "$284", // $284 (was $189, increased by 1.5x)
+      originalPrice: "$368", // $368 (was $245, increased by 1.5x)
       image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=400&h=600",
       badge: "EDITOR'S PICK",
       rating: 4.8,
@@ -69,8 +69,8 @@ export default function Bestsellers() {
     {
       id: 6,
       name: "Leather Ankle Boots",
-      price: "$165",
-      originalPrice: "$220",
+      price: "$248", // $248 (was $165, increased by 1.5x)
+      originalPrice: "$330", // $330 (was $220, increased by 1.5x)
       image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=400&h=600",
       badge: "TRENDING",
       rating: 4.9,

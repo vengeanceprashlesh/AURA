@@ -67,12 +67,15 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       const totalItems = newItems.reduce((sum, item) => sum + item.quantity, 0);
       const totalPrice = newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
-      return {
+      const newState = {
         ...state,
         items: newItems,
         totalItems,
         totalPrice,
+        isOpen: true, // Open cart when item is added
       };
+      
+      return newState;
     }
 
     case 'REMOVE_ITEM': {
@@ -165,7 +168,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (savedCart) {
       try {
         const parsedCart = JSON.parse(savedCart);
-        dispatch({ type: 'LOAD_CART', payload: parsedCart });
+        // Ensure cart is closed when loaded from storage
+        dispatch({ type: 'LOAD_CART', payload: { ...parsedCart, isOpen: false } });
       } catch (error) {
         console.error('Error loading cart from localStorage:', error);
       }

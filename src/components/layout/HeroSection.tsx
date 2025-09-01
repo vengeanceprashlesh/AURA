@@ -4,8 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { APP_CONFIG } from '@/config/constants';
 
 const HeroSection = () => {
+  // Get hero configuration
+  const { HERO, SHIPPING } = APP_CONFIG;
+  
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -72,22 +76,22 @@ const HeroSection = () => {
                 className="text-4xl md:text-6xl lg:text-7xl font-light text-black mb-4 tracking-tight"
                 variants={itemVariants}
               >
-                NEW ARRIVALS
+                {HERO.MAIN_HEADING}
               </motion.h1>
               
               <motion.p 
                 className="text-lg md:text-xl text-gray-600 mb-8 font-light"
                 variants={itemVariants}
               >
-                Shop the latest trends and must-have styles
+                {HERO.MAIN_DESCRIPTION}
               </motion.p>
               
               <motion.div variants={itemVariants}>
                 <Link
-                  href="/womens"
+                  href={HERO.CTA_HREF}
                   className="inline-block bg-black text-white px-8 py-4 text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-colors"
                 >
-                  Shop Women
+                  {HERO.CTA_TEXT}
                 </Link>
               </motion.div>
             </motion.div>
@@ -105,12 +109,12 @@ const HeroSection = () => {
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
-              <Link href="/womens">
+              <Link href={HERO.CATEGORIES.WOMEN.HREF}>
                 <div className="absolute inset-0 bg-gradient-to-br from-pink-100 to-purple-100 group-hover:from-pink-200 group-hover:to-purple-200 transition-all duration-300">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <h3 className="text-2xl font-light text-black mb-2">WOMEN</h3>
-                      <p className="text-sm text-gray-600">Shop the latest trends</p>
+                      <h3 className="text-2xl font-light text-black mb-2">{HERO.CATEGORIES.WOMEN.TITLE}</h3>
+                      <p className="text-sm text-gray-600">{HERO.CATEGORIES.WOMEN.DESCRIPTION}</p>
                     </div>
                   </div>
                 </div>
@@ -123,12 +127,12 @@ const HeroSection = () => {
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
-              <Link href="/mens">
+              <Link href={HERO.CATEGORIES.MEN.HREF}>
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-gray-100 group-hover:from-blue-200 group-hover:to-gray-200 transition-all duration-300">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <h3 className="text-2xl font-light text-black mb-2">MEN</h3>
-                      <p className="text-sm text-gray-600">Discover men's essentials</p>
+                      <h3 className="text-2xl font-light text-black mb-2">{HERO.CATEGORIES.MEN.TITLE}</h3>
+                      <p className="text-sm text-gray-600">{HERO.CATEGORIES.MEN.DESCRIPTION}</p>
                     </div>
                   </div>
                 </div>
@@ -141,12 +145,12 @@ const HeroSection = () => {
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
-              <Link href="/new-today">
+              <Link href={HERO.CATEGORIES.NEW_TODAY.HREF}>
                 <div className="absolute inset-0 bg-gradient-to-br from-yellow-100 to-orange-100 group-hover:from-yellow-200 group-hover:to-orange-200 transition-all duration-300">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <h3 className="text-2xl font-light text-black mb-2">NEW TODAY</h3>
-                      <p className="text-sm text-gray-600">Fresh drops daily</p>
+                      <h3 className="text-2xl font-light text-black mb-2">{HERO.CATEGORIES.NEW_TODAY.TITLE}</h3>
+                      <p className="text-sm text-gray-600">{HERO.CATEGORIES.NEW_TODAY.DESCRIPTION}</p>
                     </div>
                   </div>
                 </div>
@@ -160,7 +164,7 @@ const HeroSection = () => {
       <section className="bg-black text-white text-center py-4">
         <div className="max-w-7xl mx-auto px-4">
           <p className="text-sm font-medium">
-            FREE SHIPPING ON ORDERS OVER $100 | FREE RETURNS | SHOP NOW, PAY LATER
+            {SHIPPING.PROMOTIONAL_TEXT}
           </p>
         </div>
       </section>

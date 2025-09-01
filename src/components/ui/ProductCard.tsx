@@ -2,10 +2,13 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingBag, Star } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AddToCartButton from './AddToCartButton';
+import { useWishlist } from '@/contexts/WishlistContext';
+import type { Product } from '@/types';
 
 interface ProductCardProps {
   id: string;
@@ -45,16 +48,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
     setIsWishlisted(!isWishlisted);
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // TODO: Implement add to cart functionality
-    console.log(`Added ${name} to cart`);
+  // Create a mock product object for the AddToCartButton
+  const product: Product = {
+    id,
+    name,
+    description: '',
+    price,
+    images: [image],
+    category,
+    featured: isNew,
+    stockQuantity: 10, // Default stock quantity
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 
-  const discountPercentage = originalPrice 
-    ? Math.round(((originalPrice - price) / originalPrice) * 100)
-    : 0;
 
   return (
     <motion.div 
@@ -88,83 +95,79 @@ const ProductCard: React.FC<ProductCardProps> = ({
             />
           </motion.div>
           
-          {/* Badges */}
-          <motion.div 
-            className="absolute top-3 left-3 flex flex-col gap-2"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
-          >
+
+          {/* Action Buttons - Always visible on mobile, hover on desktop */}
+          <div className="absolute top-3 right-3">
             <AnimatePresence>
-              {isNew && (
-                <motion.span 
-                  className="px-2 py-1 bg-dusty-rose-500 text-white text-xs font-medium rounded-full"
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0 }}
-                  whileHover={{ scale: 1.1 }}
+              {(isHovered || (typeof window !== 'undefined' && window.innerWidth < 768)) && (
+                <motion.div 
+                  className="flex flex-col gap-2"
+                  initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 20, scale: 0.8 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
                 >
-                  New
-                </motion.span>
-              )}
-              {isSale && (
-                <motion.span 
-                  className="px-2 py-1 bg-red-500 text-white text-xs font-medium rounded-full"
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0 }}
-                  whileHover={{ scale: 1.1 }}
-                >
-                  -{discountPercentage}%
-                </motion.span>
+                  <motion.button
+                    onClick={handleWishlistToggle}
+                    className={`p-2.5 rounded-full backdrop-blur-sm shadow-sm transition-all duration-200 z-10 ${
+                      isWishlisted 
+                        ? 'bg-dusty-rose-500 text-white shadow-dusty-rose-200' 
+                        : 'bg-white/95 text-charcoal-700 hover:bg-dusty-rose-500 hover:text-white hover:shadow-dusty-rose-200'
+                    }`}
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 }}
+                  >
+                    <motion.div
+                      animate={{ scale: isWishlisted ? [1, 1.3, 1] : 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
+                    </motion.div>
+                  </motion.button>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="z-10"
+                  >
+                    <AddToCartButton 
+                      product={product}
+                      variant="icon"
+                      className="bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-dusty-rose-200 p-2.5"
+                    />
+                  </motion.div>
+                </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
-
-          {/* Action Buttons */}
-          <AnimatePresence>
-            {(isHovered || (typeof window !== 'undefined' && window.innerWidth < 768)) && (
-              <motion.div 
-                className="absolute top-3 right-3 flex flex-col gap-2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3, staggerChildren: 0.1 }}
-              >
+            
+            {/* Fallback buttons for mobile - always visible */}
+            <div className="md:hidden">
+              <div className="flex flex-col gap-2">
                 <motion.button
                   onClick={handleWishlistToggle}
-                  className={`p-2 rounded-full backdrop-blur-sm transition-colors ${
+                  className={`p-2.5 rounded-full backdrop-blur-sm shadow-sm transition-all duration-200 z-10 ${
                     isWishlisted 
-                      ? 'bg-dusty-rose-500 text-white' 
-                      : 'bg-white/80 text-charcoal-700 hover:bg-dusty-rose-500 hover:text-white'
+                      ? 'bg-dusty-rose-500 text-white shadow-dusty-rose-200' 
+                      : 'bg-white/95 text-charcoal-700 hover:bg-dusty-rose-500 hover:text-white hover:shadow-dusty-rose-200'
                   }`}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <motion.div
-                    animate={{ scale: isWishlisted ? [1, 1.3, 1] : 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
-                  </motion.div>
+                  <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
                 </motion.button>
                 
-                <motion.button
-                  onClick={handleAddToCart}
-                  className="p-2 bg-white/80 backdrop-blur-sm text-charcoal-700 rounded-full hover:bg-dusty-rose-500 hover:text-white transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <ShoppingBag className="h-4 w-4" />
-                </motion.button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <AddToCartButton 
+                  product={product}
+                  variant="icon"
+                  className="bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-dusty-rose-200 p-2.5 z-10"
+                />
+              </div>
+            </div>
+          </div>
 
           {/* Quick View Overlay */}
           <AnimatePresence>

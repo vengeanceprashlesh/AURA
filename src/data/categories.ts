@@ -7,6 +7,12 @@ export const navigationCategories = [
     featured: true,
   },
   {
+    id: 'skincare',
+    name: 'SKINCARE',
+    slug: 'skincare',
+    href: '/categories/skincare',
+  },
+  {
     id: 'clothing',
     name: 'CLOTHING',
     slug: 'clothing',
@@ -29,13 +35,6 @@ export const navigationCategories = [
     name: 'ACCESSORIES',
     slug: 'accessories',
     href: '/categories/accessories',
-  },
-  {
-    id: 'sale',
-    name: 'SALE',
-    slug: 'sale',
-    href: '/categories/sale',
-    sale: true,
   },
 ];
 

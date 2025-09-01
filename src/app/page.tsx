@@ -35,7 +35,7 @@ export default function Home() {
                 We love something matching—especially if it's in butter yellow.
               </p>
               <Link 
-                href="/categories/sets" 
+                href="/categories/new-today" 
                 className="inline-block bg-black text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 text-[10px] sm:text-xs md:text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-colors rounded-sm"
               >
                 SHOP NOW
@@ -189,84 +189,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Beautiful CTA Section for Women */}
-      <section className="bg-gradient-to-br from-soft-pink-600 via-blush-500 to-lavender-600 text-white py-24 relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-10 right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
-          <div className="absolute bottom-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-white/5 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="container mx-auto px-6 text-center max-w-5xl relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="flex justify-center items-center space-x-3 mb-8">
-              <Sparkles className="h-8 w-8 text-yellow-300 animate-pulse" />
-              <h2 className="font-playfair text-4xl md:text-6xl font-bold">
-                ✨ Ready to Shine? ✨
-              </h2>
-              <Heart className="h-8 w-8 text-yellow-300 fill-yellow-300 animate-pulse" />
-            </div>
-            
-            <p className="font-body text-xl md:text-2xl text-white/90 mb-12 leading-relaxed font-light">
-              Join over 50,000 confident women who've discovered their signature style with Aura.
-              <br className="hidden md:block" />
-              <span className="text-yellow-200">Your perfect look is waiting! 💫</span>
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="/new-arrivals"
-                  className="group inline-flex items-center gap-3 bg-white text-soft-pink-600 px-8 py-4 rounded-full font-semibold hover:bg-yellow-50 transition-all duration-300 shadow-lg hover:shadow-xl"
-                >
-                  <Sparkles className="h-5 w-5" />
-                  Explore New Arrivals
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </motion.div>
-              
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="/beauty"
-                  className="group inline-flex items-center gap-3 bg-transparent text-white border-2 border-white/80 px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-soft-pink-600 transition-all duration-300"
-                >
-                  <Star className="h-5 w-5" />
-                  Shop Beauty
-                  <Heart className="h-4 w-4 group-hover:fill-current transition-all" />
-                </Link>
-              </motion.div>
-            </div>
-            
-            {/* Social proof */}
-            <motion.div
-              className="mt-12 flex justify-center items-center space-x-8 text-white/80"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-200">50K+</div>
-                <div className="text-sm">Happy Customers</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-200">4.9★</div>
-                <div className="text-sm">Average Rating</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-200">1000+</div>
-                <div className="text-sm">New Styles Monthly</div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   );
 }

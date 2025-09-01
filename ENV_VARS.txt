@@ -2,5 +2,16 @@ Set these environment variables (e.g., in .env.local) before running the app:
 
 ADMIN_ID=Admin
 ADMIN_PASSWORD=Admin@123
+STRIPE_SECRET_KEY=sk_test_xxx
+# Optional if using webhooks for Identity or future payments
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+# App URL for redirect links if needed
+APP_URL=http://localhost:3000
+
+# Session cookies
+# Admin cookie is already used by middleware
+# User cookie is used for shopper sessions after signup/login
+# (Both are signed using ADMIN_SECRET)
+ADMIN_SECRET=dev-secret
 
 In production, configure these securely in your hosting provider.

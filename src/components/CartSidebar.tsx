@@ -3,6 +3,7 @@
 import { Fragment } from 'react';
 import Image from 'next/image';
 import { X, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 
 export default function CartSidebar() {
@@ -16,18 +17,35 @@ export default function CartSidebar() {
     updateQuantity 
   } = useCart();
 
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={closeCart}
-      />
-      
-      {/* Sidebar */}
-      <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl">
+    <AnimatePresence>
+      <motion.div 
+        className="fixed inset-0 z-50 overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* Backdrop */}
+        <motion.div 
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={closeCart}
+        />
+        
+        {/* Sidebar */}
+        <motion.div 
+          className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl"
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        >
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className="flex items-center justify-between border-b px-6 py-4">
@@ -57,9 +75,22 @@ export default function CartSidebar() {
                 </button>
               </div>
             ) : (
-              <div className="space-y-4">
-                {items.map((item) => (
-                  <div key={item.id} className="flex gap-4 bg-gray-50 rounded-lg p-4">
+              <motion.div className="space-y-4">
+                <AnimatePresence>
+                  {items.map((item, index) => (
+                    <motion.div 
+                      key={item.id} 
+                      className="flex gap-4 bg-beige-50 rounded-lg p-4 border border-beige-200"
+                      initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: 20, scale: 0.95 }}
+                      layout
+                      transition={{ 
+                        duration: 0.3, 
+                        delay: index * 0.05,
+                        layout: { duration: 0.2 }
+                      }}
+                    >
                     {/* Product Image */}
                     <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
                       <Image
@@ -88,23 +119,30 @@ export default function CartSidebar() {
                         </span>
                         
                         {/* Quantity Controls */}
-                        <div className="flex items-center gap-2">
-                          <button
+                        <div className="flex items-center gap-3">
+                          <motion.button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="p-1 rounded border border-gray-300 hover:bg-gray-100"
+                            disabled={item.quantity <= 1}
+                            className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-dusty-rose-50 hover:border-dusty-rose-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                           >
-                            <Minus className="h-3 w-3" />
-                          </button>
-                          <span className="w-8 text-center text-sm font-medium">
+                            <Minus className="h-3 w-3 text-gray-600" />
+                          </motion.button>
+                          
+                          <span className="w-8 text-center text-sm font-semibold text-charcoal-900">
                             {item.quantity}
                           </span>
-                          <button
+                          
+                          <motion.button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             disabled={item.quantity >= item.product.stockQuantity}
-                            className="p-1 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-dusty-rose-50 hover:border-dusty-rose-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                           >
-                            <Plus className="h-3 w-3" />
-                          </button>
+                            <Plus className="h-3 w-3 text-gray-600" />
+                          </motion.button>
                         </div>
                       </div>
                       
@@ -120,9 +158,10 @@ export default function CartSidebar() {
                         </button>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
             )}
           </div>
 
@@ -149,7 +188,8 @@ export default function CartSidebar() {
             </div>
           )}
         </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

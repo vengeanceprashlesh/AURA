@@ -6,7 +6,9 @@ import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/contexts/CartContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { RewardsProvider } from "@/contexts/RewardsContext";
+import { ToastProvider } from "@/components/ui/ToastManager";
 import CartSidebar from "@/components/CartSidebar";
+import ConvexClientProvider from "@/lib/convex-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -45,18 +47,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <CartProvider>
-          <WishlistProvider>
-            <RewardsProvider>
-              <div className="min-h-screen flex flex-col">
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Footer />
-              </div>
-              <CartSidebar />
-            </RewardsProvider>
-          </WishlistProvider>
-        </CartProvider>
+        <ConvexClientProvider>
+          <ToastProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <RewardsProvider>
+                  <div className="min-h-screen flex flex-col">
+                    <Header />
+                    <main className="flex-1">{children}</main>
+                    <Footer />
+                  </div>
+                  <CartSidebar />
+                </RewardsProvider>
+              </WishlistProvider>
+            </CartProvider>
+          </ToastProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   );

@@ -1,48 +1,100 @@
 "use client"
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQuery, useMutation } from 'convex/react'
+import { api } from '../../../convex/_generated/api'
 import Image from 'next/image'
-import type { Product } from '@/types'
+import Link from 'next/link'
+import type { Id } from '../../../convex/_generated/dataModel'
+import { getSizesForCategory, COMMON_COLORS, type ColorOption } from '@/utils/sizes'
+import { Plus, Minus, X, Sparkles } from 'lucide-react'
 
-const categories = ['new-today','clothing','dresses','shoes','accessories','sale']
+const categories = ['new-today','clothing','dresses','shoes','accessories','bags','tops','bottoms','summer','seasonal']
+
+interface ProductColor {
+  name: string;
+  value: string;
+  images: string[];
+}
 
 export default function AdminDashboardClient() {
-  const [items, setItems] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [category, setCategory] = useState<string>('new-today')
+  const [category, setCategory] = useState<string>('dresses')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  
+  // Form state for variants
+  const [colors, setColors] = useState<ProductColor[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [mainImages, setMainImages] = useState<string[]>(['']);
+  
   const router = useRouter()
-  // Items are already filtered by category from the API
-  const filtered = items
+  
+  // Use Convex hooks
+  const products = useQuery(api.products.getProducts, { category })
+  const addProductMutation = useMutation(api.products.addProduct)
+  const deleteProductMutation = useMutation(api.products.deleteProduct)
 
-  async function refresh() {
-    setLoading(true)
-    try {
-      const url = `/api/products?category=${encodeURIComponent(category)}`
-      const res = await fetch(url, { cache: 'no-store' })
-      if (!res.ok) {
-        if (res.status === 401) {
-          router.push('/admin/login')
-          return
-        }
-        throw new Error('Failed to fetch products')
-      }
-      const json = await res.json()
-      setItems(json.data ?? [])
-    } catch (err: any) {
-      setError(err?.message || 'Failed to load products')
-    } finally {
-      setLoading(false)
+  // Helper functions for managing variants
+  const addColorVariant = () => {
+    setColors([...colors, { name: '', value: '#000000', images: [''] }]);
+  };
+  
+  const removeColorVariant = (index: number) => {
+    setColors(colors.filter((_, i) => i !== index));
+  };
+  
+  const updateColor = (index: number, field: keyof ProductColor, value: string | string[]) => {
+    const updatedColors = [...colors];
+    updatedColors[index] = { ...updatedColors[index], [field]: value };
+    setColors(updatedColors);
+  };
+  
+  const addImageToColor = (colorIndex: number) => {
+    const updatedColors = [...colors];
+    updatedColors[colorIndex].images.push('');
+    setColors(updatedColors);
+  };
+  
+  const removeImageFromColor = (colorIndex: number, imageIndex: number) => {
+    const updatedColors = [...colors];
+    updatedColors[colorIndex].images = updatedColors[colorIndex].images.filter((_, i) => i !== imageIndex);
+    setColors(updatedColors);
+  };
+  
+  const updateColorImage = (colorIndex: number, imageIndex: number, url: string) => {
+    const updatedColors = [...colors];
+    updatedColors[colorIndex].images[imageIndex] = url;
+    setColors(updatedColors);
+  };
+  
+  const addMainImage = () => {
+    setMainImages([...mainImages, '']);
+  };
+  
+  const removeMainImage = (index: number) => {
+    setMainImages(mainImages.filter((_, i) => i !== index));
+  };
+  
+  const updateMainImage = (index: number, url: string) => {
+    const updatedImages = [...mainImages];
+    updatedImages[index] = url;
+    setMainImages(updatedImages);
+  };
+  
+  const toggleSize = (size: string) => {
+    if (selectedSizes.includes(size)) {
+      setSelectedSizes(selectedSizes.filter(s => s !== size));
+    } else {
+      setSelectedSizes([...selectedSizes, size]);
     }
-  }
-
-  useEffect(() => { 
-    refresh() 
-    // Clear success message after category change
-    if (success) setSuccess(null)
-  }, [category])
+  };
+  
+  const resetForm = () => {
+    setColors([]);
+    setSelectedSizes([]);
+    setMainImages(['']);
+  };
 
   async function onAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -50,14 +102,32 @@ export default function AdminDashboardClient() {
     setSuccess(null)
     setSubmitting(true)
     const form = new FormData(e.currentTarget)
+    
+    // Prepare main images (filter out empty strings)
+    const validMainImages = mainImages.filter(img => img.trim());
+    
+    // Prepare color variants (filter out incomplete ones)
+    const validColors = colors.filter(color => 
+      color.name.trim() && 
+      color.value && 
+      color.images.some(img => img.trim())
+    ).map(color => ({
+      ...color,
+      images: color.images.filter(img => img.trim())
+    }));
+    
     const payload = {
       name: String(form.get('name') || ''),
       price: Number(form.get('price') || 0),
-      images: [String(form.get('image') || '')].filter(Boolean),
+      images: validMainImages.length > 0 ? validMainImages : ['https://placehold.co/400x600?text=No+Image'],
       category,
       description: String(form.get('description') || ''),
+      tags: [],
       inStock: true,
       stockQuantity: Number(form.get('stock') || 0),
+      featured: Boolean(form.get('featured')),
+      availableColors: validColors.length > 0 ? validColors : undefined,
+      availableSizes: selectedSizes.length > 0 ? selectedSizes : undefined,
     }
     
     // Basic validation
@@ -73,26 +143,9 @@ export default function AdminDashboardClient() {
     }
 
     try {
-      const res = await fetch('/api/products', {
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify(payload)
-      })
-      
-      if (!res.ok) {
-        if (res.status === 401) {
-          router.push('/admin/login')
-          return
-        }
-        throw new Error('Failed to add product')
-      }
-      
-      const json = await res.json().catch(()=>({}))
-      const created: Product | undefined = (json && (json.data ?? json)) as any
+      await addProductMutation(payload)
       ;(e.target as HTMLFormElement).reset()
-      
-      // Always refresh to get the correct filtered data from API
-      await refresh()
+      resetForm()
       setSuccess('Product added successfully!')
     } catch (err: any) {
       setError(err?.message || 'Something went wrong')
@@ -101,19 +154,11 @@ export default function AdminDashboardClient() {
     }
   }
 
-  async function onRemove(id: string, name: string) {
+  async function onRemove(id: Id<"products">, name: string) {
     if (!confirm(`Remove "${name}"? This action cannot be undone.`)) return
     
     try {
-      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' })
-      if (!res.ok) {
-        if (res.status === 401) {
-          router.push('/admin/login')
-          return
-        }
-        throw new Error('Failed to remove product')
-      }
-      await refresh()
+      await deleteProductMutation({ id })
       setSuccess('Product removed successfully!')
     } catch (err: any) {
       setError(err?.message || 'Failed to remove product')
@@ -140,15 +185,21 @@ export default function AdminDashboardClient() {
               <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
               <p className="text-gray-600 mt-1">Manage your store products</p>
             </div>
-            <button 
-              onClick={handleLogout}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Logout
-            </button>
+            <div className="flex items-center gap-4">
+              <Link href="/admin/skincare" className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-md text-sm font-medium hover:shadow-lg transition-all duration-200">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Skincare Admin
+              </Link>
+              <button 
+                onClick={handleLogout}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+              </button>
+            </div>
           </div>
         </div>
 
@@ -281,6 +332,19 @@ export default function AdminDashboardClient() {
                   placeholder="0"
                 />
               </div>
+              <div>
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    name="featured"
+                    type="checkbox"
+                    className="w-5 h-5 text-gray-900 border-gray-300 rounded focus:ring-gray-500 focus:ring-2"
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-gray-700">Featured Product</span>
+                    <p className="text-xs text-gray-500">Show this product in the Featured Products section</p>
+                  </div>
+                </label>
+              </div>
             </div>
             
             <div className="flex justify-end">
@@ -316,11 +380,11 @@ export default function AdminDashboardClient() {
               Products in {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
             </h2>
             <span className="text-sm text-gray-500">
-              {loading ? 'Loading...' : `${filtered.length} products`}
+              {products === undefined ? 'Loading...' : `${products.length} products`}
             </span>
           </div>
           
-          {loading ? (
+          {products === undefined ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center space-x-2 text-gray-600">
                 <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
@@ -330,7 +394,7 @@ export default function AdminDashboardClient() {
                 <span>Loading products...</span>
               </div>
             </div>
-          ) : filtered.length === 0 ? (
+          ) : products.length === 0 ? (
             <div className="text-center py-12">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -340,8 +404,8 @@ export default function AdminDashboardClient() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filtered.map(p => (
-                <div key={p.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              {products.map(p => (
+                <div key={p._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                   <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden mb-3">
                     <Image 
                       src={(p.images && p.images[0]) || 'https://placehold.co/300x300?text=No+Image'} 
@@ -362,7 +426,7 @@ export default function AdminDashboardClient() {
                         Stock: {p.stockQuantity || 0}
                       </span>
                       <button 
-                        onClick={() => onRemove(p.id, p.name)} 
+                        onClick={() => onRemove(p._id, p.name)} 
                         className="text-sm text-red-600 hover:text-red-800 font-medium transition-colors"
                       >
                         Remove

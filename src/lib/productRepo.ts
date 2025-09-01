@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import { Product } from '@/types'
+import { randomUUID } from 'crypto'
 
 const DATA_PATH = path.join(process.cwd(), 'src', 'data', 'products.json')
 
@@ -25,7 +26,7 @@ export async function addProduct(input: Omit<Product, 'id' | 'createdAt' | 'upda
   await ensureFile()
   const now = new Date()
   const newProduct: Product = {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     rating: input.rating ?? 0,
     reviewCount: input.reviewCount ?? 0,
     featured: input.featured ?? false,

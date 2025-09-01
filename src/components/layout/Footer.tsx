@@ -2,40 +2,34 @@
 
 import Link from 'next/link';
 import { Instagram, Twitter, Facebook, Mail } from 'lucide-react';
+import { APP_CONFIG } from '@/config/constants';
 
 const Footer = () => {
-  const shopLinks = [
-    { href: '/shop/women', label: 'Women' },
-    { href: '/shop/men', label: 'Men' },
-    { href: '/shop/accessories', label: 'Accessories' },
-    { href: '/shop/sale', label: 'Sale' },
-  ];
-
-  const aboutLinks = [
-    { href: '/about', label: 'Our Story' },
-    { href: '/careers', label: 'Careers' },
-    { href: '/sustainability', label: 'Sustainability' },
-    { href: '/press', label: 'Press' },
-  ];
-
-  const helpLinks = [
-    { href: '/help/contact', label: 'Contact Us' },
-    { href: '/help/shipping', label: 'Shipping & Returns' },
-    { href: '/help/size-guide', label: 'Size Guide' },
-    { href: '/help/faq', label: 'FAQ' },
-  ];
-
-  const legalLinks = [
-    { href: '/privacy', label: 'Privacy Policy' },
-    { href: '/terms', label: 'Terms of Service' },
-    { href: '/cookies', label: 'Cookie Policy' },
-  ];
-
-  const socialLinks = [
-    { href: 'https://instagram.com', icon: Instagram, label: 'Instagram' },
-    { href: 'https://twitter.com', icon: Twitter, label: 'Twitter' },
-    { href: 'https://facebook.com', icon: Facebook, label: 'Facebook' },
-  ];
+  // Get all footer configuration from constants
+  const { FOOTER } = APP_CONFIG;
+  const shopLinks = FOOTER.SHOP_LINKS;
+  const aboutLinks = FOOTER.ABOUT_LINKS;
+  const helpLinks = FOOTER.HELP_LINKS;
+  const legalLinks = FOOTER.LEGAL_LINKS;
+  
+  // Map social icons
+  const socialLinksWithIcons = FOOTER.SOCIAL_LINKS.map(link => {
+    let icon;
+    switch (link.platform) {
+      case 'instagram':
+        icon = Instagram;
+        break;
+      case 'twitter':
+        icon = Twitter;
+        break;
+      case 'facebook':
+        icon = Facebook;
+        break;
+      default:
+        icon = Mail;
+    }
+    return { ...link, icon };
+  });
 
   return (
     <footer className="bg-charcoal-900 text-beige-100">
@@ -45,27 +39,27 @@ const Footer = () => {
           <div className="lg:col-span-2 space-y-6">
             <div>
               <Link href="/" className="font-heading text-3xl font-bold text-beige-100 hover:text-dusty-rose-300 transition-colors">
-                Aura
+                {APP_CONFIG.STORE_NAME}
               </Link>
               <p className="mt-4 text-beige-300 font-body text-sm leading-relaxed">
-                Discover timeless elegance and contemporary style. Our curated collection brings you the finest in fashion, crafted with attention to detail and sustainable practices.
+                {FOOTER.BRAND_DESCRIPTION}
               </p>
             </div>
             
             {/* Newsletter Signup */}
             <div>
               <h3 className="font-heading text-lg font-semibold text-beige-100 mb-4">
-                Stay Updated
+                {FOOTER.NEWSLETTER.TITLE}
               </h3>
               <p className="text-beige-300 text-sm mb-4 font-body">
-                Subscribe to get special offers, free giveaways, and exclusive deals.
+                {FOOTER.NEWSLETTER.DESCRIPTION}
               </p>
               <form className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-beige-400" />
                   <input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={FOOTER.NEWSLETTER.PLACEHOLDER}
                     className="w-full pl-10 pr-4 py-3 bg-charcoal-800 border border-charcoal-700 rounded-md text-beige-100 placeholder-beige-400 focus:outline-none focus:ring-2 focus:ring-dusty-rose-500 focus:border-dusty-rose-500 font-body"
                   />
                 </div>
@@ -73,7 +67,7 @@ const Footer = () => {
                   type="submit"
                   className="px-6 py-3 bg-dusty-rose-500 text-white font-medium rounded-md hover:bg-dusty-rose-600 focus:outline-none focus:ring-2 focus:ring-dusty-rose-500 focus:ring-offset-2 focus:ring-offset-charcoal-900 transition-colors font-body"
                 >
-                  Subscribe
+                  {FOOTER.NEWSLETTER.CTA_TEXT}
                 </button>
               </form>
             </div>
@@ -81,7 +75,7 @@ const Footer = () => {
 
           {/* Shop Links */}
           <div>
-            <h3 className="font-heading text-lg font-semibold text-beige-100 mb-6">Shop</h3>
+            <h3 className="font-heading text-lg font-semibold text-beige-100 mb-6">{APP_CONFIG.UI_TEXT.COMMON.SHOP || 'Shop'}</h3>
             <ul className="space-y-4">
               {shopLinks.map((link) => (
                 <li key={link.href}>
@@ -119,12 +113,21 @@ const Footer = () => {
             <ul className="space-y-4">
               {helpLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="font-body text-beige-300 hover:text-dusty-rose-300 transition-colors text-sm"
-                  >
-                    {link.label}
-                  </Link>
+                  {link.href.startsWith('mailto:') ? (
+                    <a
+                      href={link.href}
+                      className="font-body text-beige-300 hover:text-dusty-rose-300 transition-colors text-sm"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="font-body text-beige-300 hover:text-dusty-rose-300 transition-colors text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -137,7 +140,7 @@ const Footer = () => {
             {/* Copyright & Legal Links */}
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
               <p className="text-beige-400 text-sm font-body">
-                © 2024 Aura. All rights reserved.
+                {FOOTER.COPYRIGHT}
               </p>
               <div className="flex space-x-4">
                 {legalLinks.map((link) => (
@@ -154,7 +157,7 @@ const Footer = () => {
 
             {/* Social Links */}
             <div className="flex space-x-4">
-              {socialLinks.map((social) => {
+              {socialLinksWithIcons.map((social) => {
                 const Icon = social.icon;
                 return (
                   <a

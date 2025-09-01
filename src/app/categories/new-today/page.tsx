@@ -1,34 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import TrendingSection from '@/components/TrendingSection';
 import ProductGrid from '@/components/ProductGrid';
 
 export default function NewTodayPage() {
-  const featuredItems = [
-    {
-      id: 'positano-pretty',
-      name: 'Positano Pretty',
-      href: '/collections/positano-pretty',
-      image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=600&h=400',
-      description: 'Fruit prints and fresh pasta...',
-    },
-    {
-      id: 'fall-preview',
-      name: 'Fall Preview',
-      href: '/collections/fall-preview',
-      image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&h=400',
-      description: 'Because smart girls start shopping now',
-    },
-    {
-      id: 'stone-cold-fox',
-      name: 'Only At REVOLVE',
-      href: '/collections/stone-cold-fox',
-      image: 'https://images.unsplash.com/photo-1566479179817-b0ae5e6f3c40?auto=format&fit=crop&w=600&h=400',
-      description: 'The new Stone Cold Fox collection just dropped.',
-      subtitle: 'Stone Cold Fox',
-    },
-  ];
 
 
   return (
@@ -55,38 +30,15 @@ export default function NewTodayPage() {
           <span className="text-charcoal-900 font-medium">New Today</span>
         </nav>
 
-        {/* Featured Collections */}
+        {/* Dynamic Featured Products */}
         <section className="mb-16">
-          <h2 className="font-heading text-3xl font-bold text-charcoal-900 mb-8">Featured Collections</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredItems.map((item) => (
-              <Link key={item.id} href={item.href} className="group block">
-                <div className="relative overflow-hidden rounded-lg h-96 bg-gray-100">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent group-hover:from-black/80 transition-colors" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="font-heading text-white text-xl font-semibold mb-2 leading-tight drop-shadow-lg">
-                      {item.name}
-                    </h3>
-                    <p className="text-white text-sm opacity-90 leading-tight drop-shadow-md">
-                      {item.description}
-                    </p>
-                    {item.subtitle && (
-                      <p className="text-white text-xs opacity-75 mt-1 leading-tight drop-shadow-md">
-                        {item.subtitle}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <ProductGrid 
+            featured={true}
+            title="Featured Products"
+            emptyMessage="No featured products yet. Mark some products as featured in the admin panel!"
+            className=""
+            maxItems={6}
+          />
         </section>
 
         {/* New Today Products */}
@@ -99,17 +51,6 @@ export default function NewTodayPage() {
           />
         </section>
 
-        {/* Compact Trending Section */}
-        <section className="mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <TrendingSection compact={false} maxCategories={2} className="" />
-            </div>
-            <div>
-              <TrendingSection compact={true} maxCategories={4} />
-            </div>
-          </div>
-        </section>
 
       </div>
     </div>

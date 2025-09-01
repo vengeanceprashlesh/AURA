@@ -28,7 +28,7 @@ import { useRewards } from '@/contexts/RewardsContext';
 import { useCart } from '@/contexts/CartContext';
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('orders');
   const [isEditing, setIsEditing] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: 'Emma',
@@ -37,37 +37,147 @@ export default function ProfilePage() {
     birthday: '1995-08-20',
     address: '123 Fashion Ave, Style City, SC 12345'
   });
+  const [originalProfile, setOriginalProfile] = useState({
+    name: 'Emma',
+    email: 'emma@example.com',
+    phone: '+1 (555) 123-4567',
+    birthday: '1995-08-20',
+    address: '123 Fashion Ave, Style City, SC 12345'
+  });
+  const [preferences, setPreferences] = useState({
+    emailNotifications: true,
+    smsNotifications: false
+  });
+  const [isSaving, setIsSaving] = useState(false);
   
   const { items: wishlistItems, removeItem: removeFromWishlist, totalItems: wishlistCount } = useWishlist();
   const { points, level, achievements, availableRewards, redeemReward, canRedeemReward } = useRewards();
   const { addItem: addToCart } = useCart();
 
+  // Save function that simulates API call
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Update the original profile to match current changes
+    setOriginalProfile({ ...userProfile });
+    
+    // Exit edit mode
+    setIsEditing(false);
+    setIsSaving(false);
+    
+    // You could add a toast notification here
+    console.log('Profile saved successfully!');
+  };
+
+  // Cancel function to revert changes
+  const handleCancelEdit = () => {
+    setUserProfile({ ...originalProfile });
+    setIsEditing(false);
+  };
+
+  // Start editing function
+  const handleStartEdit = () => {
+    setOriginalProfile({ ...userProfile });
+    setIsEditing(true);
+  };
+
+  // Toggle preferences
+  const togglePreference = (key: keyof typeof preferences) => {
+    setPreferences(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: Sparkles },
     { id: 'orders', label: 'My Orders', icon: ShoppingBag },
     { id: 'wishlist', label: 'Wishlist', icon: Heart },
-    { id: 'rewards', label: 'Rewards', icon: Crown },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  const recentOrders = [
+  const allOrders = [
     {
-      id: '1',
+      id: 'ORD001',
       date: '2025-08-15',
       status: 'Delivered',
       total: 89.99,
       items: 2,
+      trackingNumber: 'TRK123456789',
+      deliveredAt: '2025-08-17',
+      products: [
+        { name: 'Summer Floral Dress', price: 59.99, quantity: 1 },
+        { name: 'Canvas Tote Bag', price: 29.99, quantity: 1 }
+      ],
       image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=100&h=100&fit=crop'
     },
     {
-      id: '2',
+      id: 'ORD002',
       date: '2025-08-10',
       status: 'In Transit',
       total: 156.50,
       items: 3,
+      trackingNumber: 'TRK987654321',
+      estimatedDelivery: '2025-09-03',
+      products: [
+        { name: 'Bohemian Maxi Skirt', price: 79.99, quantity: 1 },
+        { name: 'Vintage Denim Jacket', price: 65.50, quantity: 1 },
+        { name: 'Gold Statement Earrings', price: 11.01, quantity: 1 }
+      ],
       image: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=100&h=100&fit=crop'
+    },
+    {
+      id: 'ORD003',
+      date: '2025-07-28',
+      status: 'Delivered',
+      total: 234.75,
+      items: 4,
+      trackingNumber: 'TRK456789123',
+      deliveredAt: '2025-08-01',
+      products: [
+        { name: 'Silk Blouse', price: 89.99, quantity: 1 },
+        { name: 'High-waisted Trousers', price: 79.99, quantity: 1 },
+        { name: 'Leather Belt', price: 45.99, quantity: 1 },
+        { name: 'Pearl Necklace', price: 18.78, quantity: 1 }
+      ],
+      image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=100&h=100&fit=crop'
+    },
+    {
+      id: 'ORD004',
+      date: '2025-07-15',
+      status: 'Cancelled',
+      total: 125.00,
+      items: 2,
+      products: [
+        { name: 'Winter Coat', price: 99.99, quantity: 1 },
+        { name: 'Wool Scarf', price: 25.01, quantity: 1 }
+      ],
+      image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=100&h=100&fit=crop'
     }
   ];
+
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orderFilter, setOrderFilter] = useState('all'); // 'all', 'delivered', 'in-transit', 'cancelled'
+
+  // Filter orders based on selected filter
+  const filteredOrders = allOrders.filter(order => {
+    if (orderFilter === 'all') return true;
+    if (orderFilter === 'delivered') return order.status === 'Delivered';
+    if (orderFilter === 'in-transit') return order.status === 'In Transit';
+    if (orderFilter === 'cancelled') return order.status === 'Cancelled';
+    return true;
+  });
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Delivered': return 'bg-green-100 text-green-700';
+      case 'In Transit': return 'bg-blue-100 text-blue-700';
+      case 'Cancelled': return 'bg-red-100 text-red-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
 
 
   return (
@@ -75,25 +185,25 @@ export default function ProfilePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Hero Section */}
-        <div className="relative bg-gradient-to-r from-rose-400 via-pink-400 to-rose-500 rounded-3xl p-8 mb-8 overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute top-4 right-4 opacity-20">
-            <Sparkles className="h-32 w-32 text-white" />
+        <div className="relative bg-gradient-to-br from-white via-rose-50 to-rose-100 rounded-3xl p-8 mb-8 overflow-hidden border border-rose-200 shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-br from-rose-100/30 via-transparent to-rose-200/20"></div>
+          <div className="absolute top-4 right-4 opacity-10">
+            <Sparkles className="h-24 w-24 text-rose-400" />
+          </div>
+          <div className="absolute bottom-4 left-4 opacity-10">
+            <Star className="h-16 w-16 text-rose-300" />
           </div>
           
-          <div className="relative z-10 text-center text-white">
-            <h1 className="text-4xl md:text-5xl font-light mb-4">Welcome back, Emma! ✨</h1>
-            <p className="text-white/90 text-xl mb-6">Your style journey continues here</p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 flex items-center gap-2">
-                <Crown className="h-5 w-5" />
-                <span className="font-medium">VIP Member</span>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 flex items-center gap-2">
-                <Star className="h-5 w-5" />
-                <span className="font-medium">Style Points: {points.toLocaleString()}</span>
+          <div className="relative z-10 text-center">
+            <div className="mb-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-rose-400 to-rose-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">{userProfile.name.charAt(0)}</span>
               </div>
             </div>
+            <h1 className="text-3xl md:text-4xl font-light text-gray-800 mb-2">
+              Welcome back, <span className="font-semibold text-rose-600">{userProfile.name}</span>!
+            </h1>
+            <p className="text-rose-600/80 text-lg font-medium tracking-wide">✨ Your style journey continues here ✨</p>
           </div>
         </div>
 
@@ -121,71 +231,55 @@ export default function ProfilePage() {
                   );
                 })}
               </nav>
-              
-              {/* Quick Stats */}
-              <div className="mt-8 pt-6 border-t border-gray-100">
-                <h3 className="text-sm font-semibold text-gray-900 mb-4">Quick Stats</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Total Orders</span>
-                    <span className="font-semibold text-rose-600">24</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Wishlist Items</span>
-                    <span className="font-semibold text-rose-600">{wishlistCount}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Saved</span>
-                    <span className="font-semibold text-green-600">$234</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3">
             
-            {/* Overview Tab */}
-            {activeTab === 'overview' && (
-              <div className="space-y-6">
-                
-                {/* Welcome Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-4">
-                      <Gift className="h-8 w-8" />
-                      <span className="text-purple-200 text-sm">Special Offer</span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">Birthday Month!</h3>
-                    <p className="text-purple-100 text-sm">Get 25% off your next purchase</p>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-4">
-                      <Zap className="h-8 w-8" />
-                      <span className="text-orange-200 text-sm">Flash Sale</span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">24h Only</h3>
-                    <p className="text-orange-100 text-sm">Up to 50% off accessories</p>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl p-6 text-white">
-                    <div className="flex items-center justify-between mb-4">
-                      <Award className="h-8 w-8" />
-                      <span className="text-emerald-200 text-sm">Achievement</span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">Style Maven</h3>
-                    <p className="text-emerald-100 text-sm">Unlocked new rewards tier</p>
+            {/* Orders Tab */}
+            {activeTab === 'orders' && (
+              <div className="bg-white rounded-2xl shadow-sm border border-rose-100 p-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4 sm:mb-0">My Orders</h2>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setOrderFilter('all')}
+                      className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                        orderFilter === 'all' 
+                          ? 'bg-rose-500 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      All ({allOrders.length})
+                    </button>
+                    <button
+                      onClick={() => setOrderFilter('delivered')}
+                      className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                        orderFilter === 'delivered' 
+                          ? 'bg-rose-500 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      Delivered ({allOrders.filter(o => o.status === 'Delivered').length})
+                    </button>
+                    <button
+                      onClick={() => setOrderFilter('in-transit')}
+                      className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                        orderFilter === 'in-transit' 
+                          ? 'bg-rose-500 text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      In Transit ({allOrders.filter(o => o.status === 'In Transit').length})
+                    </button>
                   </div>
                 </div>
-
-                {/* Recent Activity */}
-                <div className="bg-white rounded-2xl shadow-sm border border-rose-100 p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6">Recent Orders</h2>
-                  <div className="space-y-4">
-                    {recentOrders.map((order) => (
-                      <div key={order.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                
+                <div className="space-y-4">
+                  {filteredOrders.map((order) => (
+                    <div key={order.id} className="border border-gray-200 rounded-xl p-4 hover:border-rose-200 transition-colors">
+                      <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-200">
                           <Image
                             src={order.image}
@@ -196,23 +290,75 @@ export default function ProfilePage() {
                           />
                         </div>
                         <div className="flex-1">
-                          <div className="flex justify-between items-start mb-1">
-                            <span className="font-medium text-gray-900">Order #{order.id}</span>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              order.status === 'Delivered' 
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-blue-100 text-blue-700'
-                            }`}>
+                          <div className="flex justify-between items-start mb-2">
+                            <span className="font-medium text-gray-900">Order {order.id}</span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                               {order.status}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 mb-1">{order.items} items • ${order.total}</p>
-                          <p className="text-xs text-gray-500">{order.date}</p>
+                          <p className="text-sm text-gray-600 mb-1">{order.items} items • ₹{order.total.toFixed(2)}</p>
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                            <p className="text-xs text-gray-500">Ordered: {new Date(order.date).toLocaleDateString()}</p>
+                            {order.status === 'Delivered' && order.deliveredAt && (
+                              <p className="text-xs text-green-600">Delivered: {new Date(order.deliveredAt).toLocaleDateString()}</p>
+                            )}
+                            {order.status === 'In Transit' && order.estimatedDelivery && (
+                              <p className="text-xs text-blue-600">Est. Delivery: {new Date(order.estimatedDelivery).toLocaleDateString()}</p>
+                            )}
+                            {order.trackingNumber && (
+                              <p className="text-xs text-gray-500">Tracking: {order.trackingNumber}</p>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      
+                      {/* Order Products List */}
+                      {order.products && (
+                        <div className="mt-4 pt-4 border-t border-gray-100">
+                          <p className="text-sm font-medium text-gray-700 mb-2">Items:</p>
+                          <div className="space-y-1">
+                            {order.products.map((product, index) => (
+                              <div key={index} className="flex justify-between items-center text-sm">
+                                <span className="text-gray-600">{product.quantity}x {product.name}</span>
+                                <span className="text-gray-700">₹{product.price.toFixed(2)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between items-center mt-4">
+                        <div className="text-sm">
+                          <span className="text-gray-600">Total: </span>
+                          <span className="font-semibold text-gray-900">₹{order.total.toFixed(2)}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          {order.status === 'In Transit' && (
+                            <button className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                              Track Order
+                            </button>
+                          )}
+                          {order.status === 'Delivered' && (
+                            <button className="px-3 py-1 text-sm text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                              Write Review
+                            </button>
+                          )}
+                          <button className="px-3 py-1 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+                
+                {filteredOrders.length === 0 && (
+                  <div className="text-center py-12">
+                    <ShoppingBag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-xl font-light text-gray-700 mb-2">No orders found</h3>
+                    <p className="text-gray-500">No orders match the current filter.</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -256,7 +402,7 @@ export default function ProfilePage() {
                           </div>
                         </div>
                         <h3 className="font-medium text-gray-900 mb-1">{item.name}</h3>
-                        <p className="text-lg font-semibold text-rose-600 mb-3">${item.price}</p>
+                        <p className="text-lg font-semibold text-rose-600 mb-3">₹{item.price}</p>
                         <button 
                           onClick={() => addToCart(item)}
                           className="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
@@ -271,125 +417,13 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* Rewards Tab */}
-            {activeTab === 'rewards' && (
-              <div className="space-y-6">
-                {/* Points Overview */}
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 text-white">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h2 className="text-2xl font-semibold mb-2">Style Points</h2>
-                      <p className="text-purple-100">Level {level} Member</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-3xl font-bold">{points.toLocaleString()}</div>
-                      <div className="text-purple-200 text-sm">points available</div>
-                    </div>
-                  </div>
-                  <div className="bg-white/20 rounded-full h-2 mb-2">
-                    <div 
-                      className="bg-white rounded-full h-2 transition-all duration-500"
-                      style={{ width: `${Math.min((points % 1000) / 10, 100)}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-purple-100 text-sm">{1000 - (points % 1000)} points to next level</p>
-                </div>
-
-                {/* Available Rewards */}
-                <div className="bg-white rounded-2xl shadow-sm border border-rose-100 p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-6">Available Rewards</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {availableRewards.map((reward) => (
-                      <div key={reward.id} className="border border-gray-200 rounded-xl p-4">
-                        <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <h4 className="font-semibold text-gray-900">{reward.title}</h4>
-                            <p className="text-sm text-gray-600">{reward.description}</p>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-lg font-bold text-rose-600">
-                              {reward.type === 'percentage' ? `${reward.discount}%` : `$${reward.discount}`} OFF
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-500">
-                            {reward.pointsCost === 0 ? 'Free' : `${reward.pointsCost} points`}
-                          </span>
-                          <button
-                            onClick={() => redeemReward(reward.id)}
-                            disabled={!canRedeemReward(reward.id) && reward.pointsCost > 0}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                              canRedeemReward(reward.id) || reward.pointsCost === 0
-                                ? 'bg-rose-500 text-white hover:bg-rose-600'
-                                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                            }`}
-                          >
-                            {reward.pointsCost === 0 ? 'Claim' : 'Redeem'}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Achievements */}
-                <div className="bg-white rounded-2xl shadow-sm border border-rose-100 p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-6">Achievements</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {achievements.map((achievement) => (
-                      <div 
-                        key={achievement.id} 
-                        className={`border rounded-xl p-4 transition-all ${
-                          achievement.isUnlocked 
-                            ? 'border-green-200 bg-green-50' 
-                            : 'border-gray-200 bg-gray-50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="text-2xl">{achievement.icon}</span>
-                          <div className="flex-1">
-                            <h4 className={`font-semibold ${
-                              achievement.isUnlocked ? 'text-green-800' : 'text-gray-700'
-                            }`}>
-                              {achievement.title}
-                            </h4>
-                            <p className={`text-sm ${
-                              achievement.isUnlocked ? 'text-green-600' : 'text-gray-500'
-                            }`}>
-                              {achievement.description}
-                            </p>
-                          </div>
-                          {achievement.isUnlocked && (
-                            <Check className="h-5 w-5 text-green-500" />
-                          )}
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className={`text-sm font-medium ${
-                            achievement.isUnlocked ? 'text-green-600' : 'text-gray-500'
-                          }`}>
-                            +{achievement.points} points
-                          </span>
-                          {achievement.isUnlocked && achievement.unlockedAt && (
-                            <span className="text-xs text-green-500">
-                              Unlocked {achievement.unlockedAt.toLocaleDateString()}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Settings Tab */}
             {activeTab === 'settings' && (
               <div className="bg-white rounded-2xl shadow-sm border border-rose-100 p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-semibold text-gray-900">Account Settings</h2>
                   <button
-                    onClick={() => setIsEditing(!isEditing)}
+                    onClick={isEditing ? handleCancelEdit : handleStartEdit}
                     className="flex items-center gap-2 px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors"
                   >
                     {isEditing ? <X className="h-4 w-4" /> : <Edit3 className="h-4 w-4" />}
@@ -409,10 +443,10 @@ export default function ProfilePage() {
                             type="text"
                             value={userProfile.name}
                             onChange={(e) => setUserProfile({...userProfile, name: e.target.value})}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-white text-gray-900 placeholder-gray-500"
                           />
                         ) : (
-                          <p className="px-3 py-2 bg-gray-50 rounded-lg">{userProfile.name}</p>
+                          <p className="px-3 py-2 bg-gray-50 rounded-lg text-gray-900">{userProfile.name}</p>
                         )}
                       </div>
                       <div>
@@ -422,10 +456,10 @@ export default function ProfilePage() {
                             type="email"
                             value={userProfile.email}
                             onChange={(e) => setUserProfile({...userProfile, email: e.target.value})}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-white text-gray-900 placeholder-gray-500"
                           />
                         ) : (
-                          <p className="px-3 py-2 bg-gray-50 rounded-lg">{userProfile.email}</p>
+                          <p className="px-3 py-2 bg-gray-50 rounded-lg text-gray-900">{userProfile.email}</p>
                         )}
                       </div>
                       <div>
@@ -435,10 +469,10 @@ export default function ProfilePage() {
                             type="tel"
                             value={userProfile.phone}
                             onChange={(e) => setUserProfile({...userProfile, phone: e.target.value})}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-white text-gray-900 placeholder-gray-500"
                           />
                         ) : (
-                          <p className="px-3 py-2 bg-gray-50 rounded-lg">{userProfile.phone}</p>
+                          <p className="px-3 py-2 bg-gray-50 rounded-lg text-gray-900">{userProfile.phone}</p>
                         )}
                       </div>
                       <div>
@@ -448,10 +482,10 @@ export default function ProfilePage() {
                             type="date"
                             value={userProfile.birthday}
                             onChange={(e) => setUserProfile({...userProfile, birthday: e.target.value})}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-white text-gray-900"
                           />
                         ) : (
-                          <p className="px-3 py-2 bg-gray-50 rounded-lg">{new Date(userProfile.birthday).toLocaleDateString()}</p>
+                          <p className="px-3 py-2 bg-gray-50 rounded-lg text-gray-900">{new Date(userProfile.birthday).toLocaleDateString()}</p>
                         )}
                       </div>
                     </div>
@@ -462,10 +496,10 @@ export default function ProfilePage() {
                           value={userProfile.address}
                           onChange={(e) => setUserProfile({...userProfile, address: e.target.value})}
                           rows={3}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 bg-white text-gray-900 placeholder-gray-500"
                         />
                       ) : (
-                        <p className="px-3 py-2 bg-gray-50 rounded-lg">{userProfile.address}</p>
+                        <p className="px-3 py-2 bg-gray-50 rounded-lg text-gray-900">{userProfile.address}</p>
                       )}
                     </div>
                   </div>
@@ -480,8 +514,13 @@ export default function ProfilePage() {
                           <p className="text-sm text-gray-600">Receive updates about new arrivals and sales</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox" className="sr-only peer" defaultChecked />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={preferences.emailNotifications}
+                            onChange={() => togglePreference('emailNotifications')}
+                          />
+                          <div className={`w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${preferences.emailNotifications ? 'peer-checked:bg-rose-500' : ''}`}></div>
                         </label>
                       </div>
                       <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -490,8 +529,13 @@ export default function ProfilePage() {
                           <p className="text-sm text-gray-600">Get order updates via text message</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox" className="sr-only peer" />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={preferences.smsNotifications}
+                            onChange={() => togglePreference('smsNotifications')}
+                          />
+                          <div className={`w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${preferences.smsNotifications ? 'peer-checked:bg-rose-500' : ''}`}></div>
                         </label>
                       </div>
                     </div>
@@ -500,14 +544,23 @@ export default function ProfilePage() {
                   {isEditing && (
                     <div className="flex gap-4 pt-6 border-t">
                       <button
-                        onClick={() => setIsEditing(false)}
-                        className="flex-1 bg-rose-500 text-white py-3 rounded-lg hover:bg-rose-600 transition-colors font-medium"
+                        onClick={handleSaveChanges}
+                        disabled={isSaving}
+                        className="flex-1 bg-rose-500 text-white py-3 rounded-lg hover:bg-rose-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
-                        Save Changes
+                        {isSaving ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            Saving...
+                          </>
+                        ) : (
+                          'Save Changes'
+                        )}
                       </button>
                       <button
-                        onClick={() => setIsEditing(false)}
-                        className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                        onClick={handleCancelEdit}
+                        disabled={isSaving}
+                        className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Cancel
                       </button>

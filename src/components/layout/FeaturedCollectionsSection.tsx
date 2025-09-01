@@ -1,43 +1,51 @@
 'use client';
 
 import Link from 'next/link';
-// import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
-// Mock data for featured collections linking to category pages
-const collections = [
+// Dynamic collections based on real categories with products
+const categoryConfigs = [
   {
-    id: 'luxe-classics',
-    name: 'Luxe Classics',
-    description: 'Timeless pieces for the modern wardrobe',
-    itemCount: 24,
-    image: '/images/luxe.webp',
-    href: '/categories/luxe-classics',
+    id: 'new-today',
+    name: 'New Arrivals',
+    description: 'Fresh pieces added today - discover the latest trends',
+    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=720&q=80',
+    href: '/categories/new-today',
     featured: true,
   },
   {
-    id: 'sets',
-    name: 'Most Wanted Sets',
-    description: 'Perfectly coordinated pieces for effortless style',
-    itemCount: 18,
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=720&q=80',
-    href: '/categories/sets',
+    id: 'dresses',
+    name: 'Dresses',
+    description: 'From casual day dresses to elegant evening wear',
+    image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=720&q=80',
+    href: '/categories/dresses',
     featured: false,
   },
   {
-    id: 'dresses',
-    name: 'Dresses of the Season',
-    description: 'From casual day dresses to elegant evening wear',
-    itemCount: 32,
-    image: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=720&q=80',
-    href: '/categories/dresses',
+    id: 'accessories',
+    name: 'Accessories',
+    description: 'Perfect finishing touches for every outfit',
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=720&q=80',
+    href: '/categories/accessories',
     featured: false,
   },
 ];
 
+interface Collection {
+  id: string;
+  name: string;
+  description: string;
+  itemCount: number;
+  image: string;
+  href: string;
+  featured: boolean;
+}
+
 interface CollectionCardProps {
-  collection: typeof collections[0];
+  collection: Collection;
   className?: string;
 }
 
@@ -143,6 +151,21 @@ const CollectionCard: React.FC<CollectionCardProps> = ({ collection, className =
 };
 
 const FeaturedCollectionsSection = () => {
+  // Fetch real product counts from database
+  const newTodayProducts = useQuery(api.products.getProducts, { category: 'new-today' });
+  const dressesProducts = useQuery(api.products.getProducts, { category: 'dresses' });
+  const accessoriesProducts = useQuery(api.products.getProducts, { category: 'accessories' });
+
+  // Create collections with real item counts
+  const collections: Collection[] = categoryConfigs.map(config => ({
+    ...config,
+    itemCount: 
+      config.id === 'new-today' ? (newTodayProducts?.length || 0) :
+      config.id === 'dresses' ? (dressesProducts?.length || 0) :
+      config.id === 'accessories' ? (accessoriesProducts?.length || 0) :
+      0
+  }));
+
   const [featuredCollection, ...otherCollections] = collections;
 
   const sectionVariants = {
@@ -235,56 +258,6 @@ const FeaturedCollectionsSection = () => {
           ))}
         </motion.div>
 
-        {/* CTA Section */}
-        <motion.div 
-          className="text-center bg-white rounded-lg p-8 shadow-sm"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <motion.h3 
-            className="font-heading text-2xl font-bold text-charcoal-900 mb-4"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1, duration: 0.5 }}
-          >
-            Can't Find What You're Looking For?
-          </motion.h3>
-          <motion.p 
-            className="font-body text-charcoal-600 mb-6 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            Browse our complete catalog of collections, or get in touch with our styling team 
-            for personalized recommendations.
-          </motion.p>
-          
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/collections"
-                className="bg-dusty-rose-500 text-white px-6 py-3 rounded-full font-medium hover:bg-dusty-rose-600 transition-colors inline-block"
-              >
-                View All Collections
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/contact"
-                className="text-charcoal-700 px-6 py-3 rounded-full font-medium border border-charcoal-300 hover:border-dusty-rose-500 hover:text-dusty-rose-500 transition-colors inline-block"
-              >
-                Contact Styling Team
-              </Link>
-            </motion.div>
-          </motion.div>
-        </motion.div>
 
         {/* Stats Section */}
         <motion.div 

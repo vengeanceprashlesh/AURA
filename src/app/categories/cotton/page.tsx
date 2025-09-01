@@ -3,100 +3,14 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowLeft, Heart, ShoppingBag, Star } from 'lucide-react';
+import { getCottonProducts, type MockProduct, formatProductPrice } from '@/utils/mockProducts';
+import { APP_CONFIG } from '@/config/constants';
+import { formatPrice } from '@/lib/utils';
 
-// Mock product data for Cotton Collection
-const products = [
-  {
-    id: 1,
-    name: "Organic Cotton Basic Tee",
-    price: 39.99,
-    originalPrice: 49.99,
-    image: "https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    rating: 4.8,
-    reviews: 267,
-    isNew: false,
-    isSale: true
-  },
-  {
-    id: 2,
-    name: "Cotton Loungewear Set",
-    price: 89.99,
-    originalPrice: null,
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    rating: 4.9,
-    reviews: 198,
-    isNew: true,
-    isSale: false
-  },
-  {
-    id: 3,
-    name: "Breathable Cotton Dress",
-    price: 79.99,
-    originalPrice: null,
-    image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    rating: 4.7,
-    reviews: 145,
-    isNew: false,
-    isSale: false
-  },
-  {
-    id: 4,
-    name: "Cotton Canvas Pants",
-    price: 69.99,
-    originalPrice: 89.99,
-    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    rating: 4.6,
-    reviews: 176,
-    isNew: false,
-    isSale: true
-  },
-  {
-    id: 5,
-    name: "Soft Cotton Cardigan",
-    price: 99.99,
-    originalPrice: null,
-    image: "https://images.unsplash.com/photo-1544441892-794166f1e3be?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    rating: 4.8,
-    reviews: 234,
-    isNew: true,
-    isSale: false
-  },
-  {
-    id: 6,
-    name: "Cotton Sleep Set",
-    price: 59.99,
-    originalPrice: 79.99,
-    image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    rating: 4.5,
-    reviews: 123,
-    isNew: false,
-    isSale: true
-  },
-  {
-    id: 7,
-    name: "Oversized Cotton Shirt",
-    price: 55.99,
-    originalPrice: null,
-    image: "https://images.unsplash.com/photo-1566479179817-b83216806cf1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    rating: 4.7,
-    reviews: 189,
-    isNew: false,
-    isSale: false
-  },
-  {
-    id: 8,
-    name: "Cotton Blend Joggers",
-    price: 49.99,
-    originalPrice: 69.99,
-    image: "https://images.unsplash.com/photo-1506629905138-48ac2a2b2d9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-    rating: 4.6,
-    reviews: 156,
-    isNew: false,
-    isSale: true
-  }
-];
+// Get dynamic cotton products
+const products = getCottonProducts();
 
-const ProductCard = ({ product }: { product: typeof products[0] }) => {
+const ProductCard = ({ product }: { product: MockProduct }) => {
   return (
     <motion.div
       className="group relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
@@ -110,18 +24,6 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {product.isNew && (
-            <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
-              NEW
-            </span>
-          )}
-          {product.isSale && (
-            <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-              SALE
-            </span>
-          )}
-        </div>
 
         <button className="absolute top-3 right-3 p-2 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white">
           <Heart className="w-4 h-4 text-gray-600" />
@@ -156,11 +58,11 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
 
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-gray-900">
-            ${product.price}
+            {formatPrice(product.price)}
           </span>
           {product.originalPrice && (
             <span className="text-sm text-gray-500 line-through">
-              ${product.originalPrice}
+              {formatPrice(product.originalPrice)}
             </span>
           )}
         </div>

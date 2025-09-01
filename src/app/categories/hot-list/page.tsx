@@ -1,55 +1,8 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Flame, TrendingUp } from 'lucide-react';
+import ProductGrid from '@/components/ProductGrid';
 
 export default function HotListPage() {
-  const hotProducts = [
-    {
-      id: 1,
-      name: 'Viral Satin Slip Dress',
-      brand: 'Reformation',
-      price: '$158',
-      originalPrice: null,
-      image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=400&h=600',
-      badge: 'VIRAL',
-      isHot: true,
-      href: '/products/1'
-    },
-    {
-      id: 2,
-      name: 'It-Girl Blazer',
-      brand: 'Ganni',
-      price: '$345',
-      originalPrice: null,
-      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=400&h=600',
-      badge: 'TRENDING',
-      isHot: true,
-      href: '/products/2'
-    },
-    {
-      id: 3,
-      name: 'Celebrity Favorite Jeans',
-      brand: 'AGOLDE',
-      price: '$198',
-      originalPrice: null,
-      image: 'https://images.unsplash.com/photo-1582418702059-97ebafb35d09?auto=format&fit=crop&w=400&h=600',
-      badge: 'CELEB LOVE',
-      isHot: true,
-      href: '/products/3'
-    },
-    {
-      id: 4,
-      name: 'Must-Have Mini Bag',
-      brand: 'Jacquemus',
-      price: '$525',
-      originalPrice: null,
-      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&h=600',
-      badge: 'BESTSELLER',
-      isHot: true,
-      href: '/products/4'
-    }
-  ];
-
   const categories = [
     {
       name: 'Bestsellers',
@@ -105,47 +58,14 @@ export default function HotListPage() {
             <h2 className="font-heading text-3xl font-bold text-charcoal-900">Trending Now</h2>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {hotProducts.map((product) => (
-              <Link key={product.id} href={product.href} className="group">
-                <div className="bg-white rounded-lg shadow-sm border border-beige-200 overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="relative aspect-[3/4] bg-beige-100">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-3 left-3">
-                      <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                        {product.badge}
-                      </span>
-                    </div>
-                    <div className="absolute top-3 right-3">
-                      <Flame className="h-5 w-5 text-red-500 fill-current" />
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <div className="text-xs text-charcoal-600 mb-1 font-medium uppercase tracking-wide">
-                      {product.brand}
-                    </div>
-                    <h3 className="font-medium text-charcoal-900 mb-2 line-clamp-2 group-hover:text-dusty-rose-500 transition-colors">
-                      {product.name}
-                    </h3>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-semibold text-charcoal-900">
-                        {product.price}
-                      </span>
-                      <span className="text-xs text-red-600 font-bold">
-                        HOT
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {/* Featured/Popular Products */}
+          <ProductGrid 
+            featured={true}
+            title=""
+            emptyMessage="No trending items available. Mark some products as featured in the admin panel!"
+            className=""
+            maxItems={12}
+          />
         </section>
 
         <section className="mb-16">
