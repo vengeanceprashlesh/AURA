@@ -2,7 +2,18 @@ import { NextResponse } from 'next/server';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../../../../convex/_generated/api';
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+function getConvexClient() {
+  const url = process.env.NEXT_PUBLIC_CONVEX_URL;
+  if (!url) {
+    console.error('NEXT_PUBLIC_CONVEX_URL environment variable is not set');
+    throw new Error('NEXT_PUBLIC_CONVEX_URL environment variable is not set');
+  }
+  return new ConvexHttpClient(url);
+}
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -12,6 +23,7 @@ export async function GET(req: Request) {
   const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
 
   try {
+    const convex = getConvexClient();
     const products = await convex.query(api.products.getProducts, {
       category,
       search,
@@ -40,6 +52,7 @@ export async function POST(req: Request) {
       );
     }
 
+    const convex = getConvexClient();
     const productId = await convex.mutation(api.products.addProduct, {
       name: body.name,
       description: body.description ?? '',

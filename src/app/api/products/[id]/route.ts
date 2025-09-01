@@ -3,7 +3,18 @@ import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../../../../../convex/_generated/api';
 import { Id } from '../../../../../convex/_generated/dataModel';
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+function getConvexClient() {
+  const url = process.env.NEXT_PUBLIC_CONVEX_URL;
+  if (!url) {
+    console.error('NEXT_PUBLIC_CONVEX_URL environment variable is not set');
+    throw new Error('NEXT_PUBLIC_CONVEX_URL environment variable is not set');
+  }
+  return new ConvexHttpClient(url);
+}
 
 export async function DELETE(
   _req: Request,
@@ -11,6 +22,7 @@ export async function DELETE(
 ) {
   try {
     const id = params.id as Id<"products">;
+    const convex = getConvexClient();
     
     await convex.mutation(api.products.deleteProduct, { id });
     
