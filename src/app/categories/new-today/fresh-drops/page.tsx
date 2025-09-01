@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import CategoryPageBase from '@/components/layout/CategoryPageBase';
 import { motion } from 'framer-motion';
@@ -65,7 +65,7 @@ const FreshDropsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="font-medium"
         >
-          ✨ Fresh Drops Updated Daily at 12 PM EST ✨
+          âœ¨ Fresh Drops Updated Daily at 12 PM EST âœ¨
         </motion.div>
       </div>
 
@@ -113,3 +113,4 @@ const FreshDropsPage = () => {
 };
 
 export default FreshDropsPage;
+

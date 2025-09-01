@@ -1,10 +1,10 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Sparkles, Heart } from 'lucide-react';
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/components/DynamicProductGrid';
 
 const JewelryPage = () => {
   const categories = [
@@ -188,23 +188,23 @@ const JewelryPage = () => {
                 Quality Promise
               </h3>
               <ul className="text-gray-700 space-y-2 text-sm sm:text-base">
-                <li>• Hypoallergenic materials for sensitive skin</li>
-                <li>• Tarnish-resistant finishes</li>
-                <li>• Secure clasps and settings</li>
-                <li>• Quality control tested</li>
-                <li>• Gift-ready packaging</li>
-                <li>• 30-day return policy</li>
+                <li>â€¢ Hypoallergenic materials for sensitive skin</li>
+                <li>â€¢ Tarnish-resistant finishes</li>
+                <li>â€¢ Secure clasps and settings</li>
+                <li>â€¢ Quality control tested</li>
+                <li>â€¢ Gift-ready packaging</li>
+                <li>â€¢ 30-day return policy</li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">Styling Tips</h3>
               <ul className="text-gray-700 space-y-2 text-sm sm:text-base">
-                <li>• Layer delicate necklaces for a trendy look</li>
-                <li>• Mix metals for modern styling</li>
-                <li>• Choose statement pieces as focal points</li>
-                <li>• Consider your neckline when selecting necklaces</li>
-                <li>• Stack rings and bracelets for texture</li>
-                <li>• Match jewelry metals to your watch</li>
+                <li>â€¢ Layer delicate necklaces for a trendy look</li>
+                <li>â€¢ Mix metals for modern styling</li>
+                <li>â€¢ Choose statement pieces as focal points</li>
+                <li>â€¢ Consider your neckline when selecting necklaces</li>
+                <li>â€¢ Stack rings and bracelets for texture</li>
+                <li>â€¢ Match jewelry metals to your watch</li>
               </ul>
             </div>
           </div>
@@ -215,3 +215,4 @@ const JewelryPage = () => {
 };
 
 export default JewelryPage;
+

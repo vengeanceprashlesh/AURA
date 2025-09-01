@@ -1,6 +1,6 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/components/DynamicProductGrid';
 
 export default function BottomsPage() {
 
@@ -42,3 +42,4 @@ export default function BottomsPage() {
     </div>
   );
 }
+

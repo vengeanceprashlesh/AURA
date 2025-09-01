@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import CategoryPageBase from '@/components/layout/CategoryPageBase';
 
@@ -67,3 +67,4 @@ const NewTodaySetsPage = () => {
 };
 
 export default NewTodaySetsPage;
+

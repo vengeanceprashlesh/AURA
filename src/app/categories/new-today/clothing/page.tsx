@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import CategoryPageBase from '@/components/layout/CategoryPageBase';
 
@@ -44,3 +44,4 @@ const NewClothingPage = () => {
 };
 
 export default NewClothingPage;
+

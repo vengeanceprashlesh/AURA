@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import CategoryPageBase from '@/components/layout/CategoryPageBase';
 
@@ -40,3 +40,4 @@ const NewSwimPage = () => {
 };
 
 export default NewSwimPage;
+

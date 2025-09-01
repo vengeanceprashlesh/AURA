@@ -1,6 +1,6 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/components/DynamicProductGrid';
 
 export default function SummerPage() {
   return (
@@ -60,3 +60,4 @@ export default function SummerPage() {
     </div>
   );
 }
+

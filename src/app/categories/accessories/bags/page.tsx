@@ -1,10 +1,10 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, ShoppingBag, Heart } from 'lucide-react';
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/components/DynamicProductGrid';
 
 const BagsPage = () => {
   const categories = [
@@ -171,19 +171,19 @@ const BagsPage = () => {
             <div>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">Quality Materials</h3>
               <ul className="text-gray-700 space-y-2 text-sm sm:text-base">
-                <li>• Premium leather and durable fabrics</li>
-                <li>• Reinforced stitching and construction</li>
-                <li>• Water-resistant treatments</li>
-                <li>• Quality hardware and zippers</li>
+                <li>â€¢ Premium leather and durable fabrics</li>
+                <li>â€¢ Reinforced stitching and construction</li>
+                <li>â€¢ Water-resistant treatments</li>
+                <li>â€¢ Quality hardware and zippers</li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">Perfect for Every Occasion</h3>
               <ul className="text-gray-700 space-y-2 text-sm sm:text-base">
-                <li>• Professional work bags</li>
-                <li>• Casual everyday styles</li>
-                <li>• Travel and adventure ready</li>
-                <li>• Evening and special events</li>
+                <li>â€¢ Professional work bags</li>
+                <li>â€¢ Casual everyday styles</li>
+                <li>â€¢ Travel and adventure ready</li>
+                <li>â€¢ Evening and special events</li>
               </ul>
             </div>
           </div>
@@ -194,3 +194,4 @@ const BagsPage = () => {
 };
 
 export default BagsPage;
+

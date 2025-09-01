@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  // Ensure environment variables are available during build
+  env: {
+    NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
+  },
   // External packages for server components
   serverExternalPackages: ['convex'],
   // Ensure API routes are not pre-rendered

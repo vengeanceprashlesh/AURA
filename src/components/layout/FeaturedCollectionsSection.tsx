@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -151,6 +152,12 @@ const CollectionCard: React.FC<CollectionCardProps> = ({ collection, className =
 };
 
 const FeaturedCollectionsSection = () => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Fetch real product counts from database
   const newTodayProducts = useQuery(api.products.getProducts, { category: 'new-today' });
   const dressesProducts = useQuery(api.products.getProducts, { category: 'dresses' });
@@ -159,7 +166,7 @@ const FeaturedCollectionsSection = () => {
   // Create collections with real item counts
   const collections: Collection[] = categoryConfigs.map(config => ({
     ...config,
-    itemCount: 
+    itemCount: !mounted ? 0 :
       config.id === 'new-today' ? (newTodayProducts?.length || 0) :
       config.id === 'dresses' ? (dressesProducts?.length || 0) :
       config.id === 'accessories' ? (accessoriesProducts?.length || 0) :

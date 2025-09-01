@@ -1,6 +1,6 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { ChevronRight, Flame, TrendingUp } from 'lucide-react';
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/components/DynamicProductGrid';
 
 export default function HotListPage() {
   const categories = [
@@ -11,7 +11,7 @@ export default function HotListPage() {
       items: [
         { name: 'Top Rated', badge: 'HOT' },
         { name: 'Most Loved', badge: null },
-        { name: 'Trending Up', badge: '↗' }
+        { name: 'Trending Up', badge: 'â†—' }
       ]
     },
     {
@@ -126,3 +126,4 @@ export default function HotListPage() {
     </div>
   );
 }
+

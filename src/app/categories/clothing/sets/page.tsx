@@ -1,6 +1,6 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { ChevronRight, Sparkles, Heart, Star } from 'lucide-react';
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/components/DynamicProductGrid';
 
 const SetsPage = () => {
 
@@ -66,3 +66,4 @@ const SetsPage = () => {
 };
 
 export default SetsPage;
+

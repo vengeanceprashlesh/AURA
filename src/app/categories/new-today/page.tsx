@@ -1,7 +1,7 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/components/DynamicProductGrid';
 
 export default function NewTodayPage() {
 
@@ -56,3 +56,4 @@ export default function NewTodayPage() {
     </div>
   );
 }
+

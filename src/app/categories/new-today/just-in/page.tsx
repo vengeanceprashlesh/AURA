@@ -1,4 +1,4 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Filter } from 'lucide-react';
 
@@ -201,3 +201,4 @@ export default function JustInPage() {
     </div>
   );
 }
+

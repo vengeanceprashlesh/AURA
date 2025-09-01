@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import CategoryPageBase from '@/components/layout/CategoryPageBase';
 
@@ -42,3 +42,4 @@ const HeelsPage = () => {
 };
 
 export default HeelsPage;
+

@@ -1,4 +1,4 @@
-import { CategoryPageBase } from '@/components/layout';
+﻿import { CategoryPageBase } from '@/components/layout';
 
 export default function CasualShoesPage() {
   return (
@@ -31,3 +31,4 @@ export default function CasualShoesPage() {
     />
   );
 }
+

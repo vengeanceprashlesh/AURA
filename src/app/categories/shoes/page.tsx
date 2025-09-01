@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 
-import ProductGrid from '@/components/ProductGrid';
+import ProductGrid from '@/components/DynamicProductGrid';
 import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 
@@ -32,3 +32,4 @@ export default function ShoesPage() {
     </div>
   );
 }
+

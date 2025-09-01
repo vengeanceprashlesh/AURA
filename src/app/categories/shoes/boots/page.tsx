@@ -1,4 +1,4 @@
-import { CategoryPageBase } from '@/components/layout';
+﻿import { CategoryPageBase } from '@/components/layout';
 
 export default function BootsPage() {
   return (
@@ -26,3 +26,4 @@ export default function BootsPage() {
     />
   );
 }
+

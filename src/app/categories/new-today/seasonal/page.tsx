@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import CategoryPageBase from '@/components/layout/CategoryPageBase';
 import { motion } from 'framer-motion';
@@ -143,3 +143,4 @@ const SeasonalPage = () => {
 };
 
 export default SeasonalPage;
+

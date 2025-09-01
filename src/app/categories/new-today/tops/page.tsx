@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import CategoryPageBase from '@/components/layout/CategoryPageBase';
 
@@ -31,3 +31,4 @@ const NewTopsPage = () => {
 };
 
 export default NewTopsPage;
+

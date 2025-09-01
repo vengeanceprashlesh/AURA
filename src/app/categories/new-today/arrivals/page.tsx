@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import CategoryPageBase from '@/components/layout/CategoryPageBase';
 
@@ -32,3 +32,4 @@ const NewArrivalsPage = () => {
 };
 
 export default NewArrivalsPage;
+
