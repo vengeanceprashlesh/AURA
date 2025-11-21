@@ -54,7 +54,7 @@ const CheckoutPage = () => {
   if (step === 'complete') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <motion.div 
+        <motion.div
           className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -118,18 +118,18 @@ const CheckoutPage = () => {
               </div>
               <span className="text-sm font-medium">SHIPPING</span>
             </div>
-            
+
             <div className={`w-16 h-px ${step === 'payment' || step === 'review' ? 'bg-green-500' : 'bg-gray-300'}`} />
-            
+
             <div className={`flex items-center space-x-2 ${step === 'payment' ? 'text-black' : step === 'review' ? 'text-green-500' : 'text-gray-400'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${step === 'payment' ? 'border-black bg-black text-white' : step === 'review' ? 'border-green-500 bg-green-500 text-white' : 'border-gray-400'}`}>
                 2
               </div>
               <span className="text-sm font-medium">PAYMENT</span>
             </div>
-            
+
             <div className={`w-16 h-px ${step === 'review' ? 'bg-green-500' : 'bg-gray-300'}`} />
-            
+
             <div className={`flex items-center space-x-2 ${step === 'review' ? 'text-black' : 'text-gray-400'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${step === 'review' ? 'border-black bg-black text-white' : 'border-gray-400'}`}>
                 3
@@ -148,7 +148,7 @@ const CheckoutPage = () => {
               {step === 'shipping' && (
                 <>
                   <h2 className="text-xl font-semibold text-black">Shipping Information</h2>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
@@ -260,15 +260,14 @@ const CheckoutPage = () => {
               {step === 'payment' && (
                 <>
                   <h2 className="text-xl font-semibold text-black">Payment Information</h2>
-                  
+
                   <div className="space-y-4">
                     <div className="flex space-x-4">
                       <button
                         type="button"
                         onClick={() => setPaymentMethod('card')}
-                        className={`flex-1 p-4 border-2 rounded-lg flex items-center justify-center space-x-2 transition-all ${
-                          paymentMethod === 'card' ? 'border-black bg-black text-white' : 'border-gray-300 hover:border-gray-400'
-                        }`}
+                        className={`flex-1 p-4 border-2 rounded-lg flex items-center justify-center space-x-2 transition-all ${paymentMethod === 'card' ? 'border-black bg-black text-white' : 'border-gray-300 hover:border-gray-400'
+                          }`}
                       >
                         <CreditCard className="h-5 w-5" />
                         <span>Credit Card</span>
@@ -276,9 +275,8 @@ const CheckoutPage = () => {
                       <button
                         type="button"
                         onClick={() => setPaymentMethod('paypal')}
-                        className={`flex-1 p-4 border-2 rounded-lg flex items-center justify-center space-x-2 transition-all ${
-                          paymentMethod === 'paypal' ? 'border-black bg-black text-white' : 'border-gray-300 hover:border-gray-400'
-                        }`}
+                        className={`flex-1 p-4 border-2 rounded-lg flex items-center justify-center space-x-2 transition-all ${paymentMethod === 'paypal' ? 'border-black bg-black text-white' : 'border-gray-300 hover:border-gray-400'
+                          }`}
                       >
                         <span>PayPal</span>
                       </button>
@@ -346,7 +344,7 @@ const CheckoutPage = () => {
               {step === 'review' && (
                 <>
                   <h2 className="text-xl font-semibold text-black">Review Your Order</h2>
-                  
+
                   <div className="space-y-4">
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <h3 className="font-medium text-black mb-2">Shipping Address</h3>
@@ -394,15 +392,15 @@ const CheckoutPage = () => {
                     Back
                   </button>
                 )}
-                
+
                 <button
                   type="submit"
                   disabled={step === 'review' && !agreeToTerms}
                   className="ml-auto px-8 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
-                  {step === 'shipping' ? 'Continue to Payment' : 
-                   step === 'payment' ? 'Review Order' : 
-                   'Complete Order'}
+                  {step === 'shipping' ? 'Continue to Payment' :
+                    step === 'payment' ? 'Review Order' :
+                      'Complete Order'}
                 </button>
               </div>
             </form>
@@ -411,7 +409,7 @@ const CheckoutPage = () => {
           {/* Order Summary */}
           <div className="bg-white rounded-lg shadow-sm p-6 h-fit">
             <h2 className="text-xl font-semibold text-black mb-4">Order Summary</h2>
-            
+
             <div className="space-y-4 mb-6">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center space-x-3">

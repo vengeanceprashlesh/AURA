@@ -23,7 +23,7 @@ const ProductCard = ({ product }: { product: MockProduct }) => {
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        
+
 
         <button className="absolute top-3 right-3 p-2 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white">
           <Heart className="w-4 h-4 text-gray-600" />
@@ -39,17 +39,16 @@ const ProductCard = ({ product }: { product: MockProduct }) => {
         <h3 className="font-medium text-gray-900 text-sm sm:text-base mb-2 line-clamp-2">
           {product.name}
         </h3>
-        
+
         <div className="flex items-center gap-1 mb-2">
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`w-3 h-3 ${
-                  i < Math.floor(product.rating) 
-                    ? 'text-yellow-400 fill-current' 
-                    : 'text-gray-300'
-                }`}
+                className={`w-3 h-3 ${i < Math.floor(product.rating)
+                  ? 'text-yellow-400 fill-current'
+                  : 'text-gray-300'
+                  }`}
               />
             ))}
           </div>
@@ -147,7 +146,7 @@ export default function CottonPage() {
           <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
             {products.length} Cotton Products
           </h3>
-          
+
           <div className="flex gap-2 sm:gap-4">
             <select className="text-sm border border-gray-300 rounded-md px-3 py-2 bg-white">
               <option>Sort by: Featured</option>
@@ -158,7 +157,7 @@ export default function CottonPage() {
           </div>
         </div>
 
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
