@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
-  const router = useRouter();
+  const { login, isLoading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,20 +14,12 @@ export default function LoginPage() {
     setLoading(true);
     const form = new FormData(e.currentTarget);
 
-    const payload = {
-      email: String(form.get("email") || ""),
-      password: String(form.get("password") || ""),
-    };
+    const email = String(form.get("email") || "");
+    const password = String(form.get("password") || "");
 
     try {
-      const res = await fetch("/api/v2/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.message || "Login failed");
-      router.push("/profile");
+      await login(email, password);
+      // Redirect handled by AuthContext
     } catch (err: any) {
       setError(err?.message || "Something went wrong");
     } finally {

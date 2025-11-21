@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function SignupPage() {
-  const router = useRouter();
+  const { signup } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,14 +36,8 @@ export default function SignupPage() {
     };
 
     try {
-      const res = await fetch("/api/v2/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.message || "Signup failed");
-      router.push("/profile");
+      await signup(payload);
+      // Redirect handled by AuthContext
     } catch (err: any) {
       setError(err?.message || "Something went wrong");
     } finally {

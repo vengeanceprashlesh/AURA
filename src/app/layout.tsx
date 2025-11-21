@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/contexts/CartContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { RewardsProvider } from "@/contexts/RewardsContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/components/ui/ToastManager";
 import CartSidebar from "@/components/CartSidebar";
 import ConvexClientProvider from "@/lib/convex-provider";
@@ -48,20 +49,22 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ConvexClientProvider>
-          <ToastProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <RewardsProvider>
-                  <div className="min-h-screen flex flex-col">
-                    <Header />
-                    <main className="flex-1">{children}</main>
-                    <Footer />
-                  </div>
-                  <CartSidebar />
-                </RewardsProvider>
-              </WishlistProvider>
-            </CartProvider>
-          </ToastProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <RewardsProvider>
+                    <div className="min-h-screen flex flex-col">
+                      <Header />
+                      <main className="flex-1">{children}</main>
+                      <Footer />
+                    </div>
+                    <CartSidebar />
+                  </RewardsProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </ToastProvider>
+          </AuthProvider>
         </ConvexClientProvider>
       </body>
     </html>
