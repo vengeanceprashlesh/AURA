@@ -35,7 +35,7 @@ const NewArrivalsSection = () => {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch('/api/products', { cache: 'no-store' });
+        const res = await fetch('/api/v2/products', { cache: 'no-store' });
         const json = await res.json();
         const data: ApiProduct[] = json.data ?? json;
         // Sort by createdAt desc, fallback to as-is
@@ -68,7 +68,7 @@ const NewArrivalsSection = () => {
 
   const scroll = (direction: 'left' | 'right') => {
     const limit = Math.max(0, items.length - 3);
-    const newIndex = direction === 'left' 
+    const newIndex = direction === 'left'
       ? Math.max(0, currentIndex - 1)
       : Math.min(limit, currentIndex + 1);
     setCurrentIndex(newIndex);
@@ -99,7 +99,7 @@ const NewArrivalsSection = () => {
   };
 
   return (
-    <motion.section 
+    <motion.section
       className="py-20 bg-white"
       variants={sectionVariants}
       initial="hidden"
@@ -109,7 +109,7 @@ const NewArrivalsSection = () => {
       {/* This div centers the content and holds the title */}
       <div className="container mx-auto px-6">
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="flex items-center justify-between mb-12"
           variants={itemVariants}
         >
@@ -121,7 +121,7 @@ const NewArrivalsSection = () => {
               Discover the latest additions to our collection. Fresh styles that perfectly capture this season's trends.
             </p>
           </div>
-          
+
           <div className="hidden md:flex items-center gap-4">
             {/* Navigation Buttons */}
             <motion.button
@@ -142,7 +142,7 @@ const NewArrivalsSection = () => {
             >
               <ChevronRight className="h-5 w-5" />
             </motion.button>
-            
+
             {/* View All Link */}
             <motion.div whileHover={{ x: 5 }}>
               <Link
@@ -160,7 +160,7 @@ const NewArrivalsSection = () => {
       {/* This div allows the scroller to bleed to the edges */}
       <div className="w-full">
         {/* This is the ONLY div that should scroll */}
-        <motion.div 
+        <motion.div
           className="flex gap-6 overflow-x-auto px-6 cursor-grab active:cursor-grabbing"
           variants={itemVariants}
           drag="x"
@@ -172,7 +172,7 @@ const NewArrivalsSection = () => {
           style={{ x }}
         >
           {(loading ? [] : items).map((product, index) => (
-            <motion.div 
+            <motion.div
               key={product.id}
               className="flex-shrink-0 w-80"
               variants={{
@@ -187,7 +187,7 @@ const NewArrivalsSection = () => {
                 },
               }}
             >
-              <ProductCard 
+              <ProductCard
                 id={product.id}
                 name={product.name}
                 category={product.category}
@@ -207,7 +207,7 @@ const NewArrivalsSection = () => {
       {/* Mobile View All Button and Progress Indicators */}
       <div className="container mx-auto px-6">
         {/* Mobile View All Button */}
-        <motion.div 
+        <motion.div
           className="flex justify-center mt-8 md:hidden"
           variants={itemVariants}
         >
@@ -223,16 +223,15 @@ const NewArrivalsSection = () => {
         </motion.div>
 
         {/* Progress Indicators */}
-        <motion.div 
+        <motion.div
           className="flex justify-center gap-2 mt-6"
           variants={itemVariants}
         >
           {Array.from({ length: Math.max(1, Math.max(0, items.length - 2)) }).map((_, index) => (
             <motion.button
               key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-dusty-rose-500' : 'bg-charcoal-300'
-              }`}
+              className={`w-2 h-2 rounded-full transition-colors ${index === currentIndex ? 'bg-dusty-rose-500' : 'bg-charcoal-300'
+                }`}
               onClick={() => setCurrentIndex(index)}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}

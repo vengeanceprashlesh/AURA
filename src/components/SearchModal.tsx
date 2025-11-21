@@ -80,7 +80,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const performSearch = async (query: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/products?search=${encodeURIComponent(query)}`);
+      const response = await fetch(`/api/v2/products?search=${encodeURIComponent(query)}`);
       if (response.ok) {
         const data = await response.json();
         setSearchResults(data.data || []);
