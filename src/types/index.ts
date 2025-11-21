@@ -16,6 +16,8 @@ export interface Product {
   featured: boolean;
   createdAt: Date;
   updatedAt: Date;
+  availableSizes?: string[];
+  availableColors?: { name: string; value: string; images: string[] }[];
 }
 
 // Cart related types
@@ -77,7 +79,7 @@ export interface Order {
   estimatedDelivery: Date;
 }
 
-export type OrderStatus = 
+export type OrderStatus =
   | 'pending'
   | 'confirmed'
   | 'processing'

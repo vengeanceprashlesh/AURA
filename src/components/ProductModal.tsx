@@ -6,6 +6,7 @@ import { X, Heart, ShoppingBag, Star, Minus, Plus, Truck, Shield, RotateCcw } fr
 import type { Product } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { getSizesForCategory } from '@/utils/sizes';
 
 interface ProductModalProps {
   product: Product | null;
@@ -15,12 +16,12 @@ interface ProductModalProps {
   isFavorite?: boolean;
 }
 
-export default function ProductModal({ 
-  product, 
-  isOpen, 
-  onClose, 
+export default function ProductModal({
+  product,
+  isOpen,
+  onClose,
   onToggleFavorite,
-  isFavorite = false 
+  isFavorite = false
 }: ProductModalProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -35,7 +36,7 @@ export default function ProductModal({
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -45,21 +46,22 @@ export default function ProductModal({
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
-    
+
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
     }
-    
+
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
   if (!isOpen || !product) return null;
 
-  const images = product.images && product.images.length > 0 
-    ? product.images 
+  const images = product.images && product.images.length > 0
+    ? product.images
     : ['https://placehold.co/600x800?text=No+Image'];
 
-  const sizes = ['XS', 'S', 'M', 'L', 'XL'];
+  // Get dynamic sizes based on category or product data
+  const availableSizes = product.availableSizes || getSizesForCategory(product.category).map(s => s.label);
 
   const handleQuantityChange = (change: number) => {
     setQuantity(prev => Math.max(1, Math.min(product.stockQuantity, prev + change)));
@@ -67,12 +69,12 @@ export default function ProductModal({
 
   const handleAddToCart = async () => {
     if (!product.inStock) return;
-    
+
     setIsAddingToCart(true);
-    
+
     try {
       addItem(product, quantity, selectedSize);
-      
+
       // Show success feedback
       setTimeout(() => {
         setIsAddingToCart(false);
@@ -87,11 +89,11 @@ export default function ProductModal({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
-      <div 
+      <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative min-h-screen flex items-center justify-center p-4">
         <div className="relative bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
@@ -116,7 +118,7 @@ export default function ProductModal({
                   unoptimized={images[selectedImageIndex].includes('placehold.co')}
                 />
               </div>
-              
+
               {/* Image Thumbnails */}
               {images.length > 1 && (
                 <div className="absolute bottom-4 left-4 right-4">
@@ -125,11 +127,10 @@ export default function ProductModal({
                       <button
                         key={index}
                         onClick={() => setSelectedImageIndex(index)}
-                        className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
-                          index === selectedImageIndex 
-                            ? 'border-rose-500' 
-                            : 'border-gray-200 hover:border-gray-400'
-                        }`}
+                        className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${index === selectedImageIndex
+                          ? 'border-rose-500'
+                          : 'border-gray-200 hover:border-gray-400'
+                          }`}
                       >
                         <Image
                           src={image}
@@ -160,18 +161,17 @@ export default function ProductModal({
                       </span>
                     )}
                   </div>
-                  
+
                   {/* Rating */}
                   <div className="flex items-center gap-2 mb-4">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`h-4 w-4 ${
-                            i < Math.floor(product.rating || 0)
-                              ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-300'
-                          }`}
+                          className={`h-4 w-4 ${i < Math.floor(product.rating || 0)
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-gray-300'
+                            }`}
                         />
                       ))}
                     </div>
@@ -190,24 +190,25 @@ export default function ProductModal({
                 )}
 
                 {/* Size Selection */}
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">Size</h3>
-                  <div className="flex gap-2">
-                    {sizes.map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`px-4 py-2 border rounded-lg transition-colors ${
-                          selectedSize === size
-                            ? 'border-rose-500 bg-rose-50 text-rose-700'
-                            : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
+                {availableSizes.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-3">Size</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {availableSizes.map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(size)}
+                          className={`px-4 py-2 border rounded-lg transition-colors min-w-[3rem] ${selectedSize === size
+                              ? 'border-gray-900 bg-gray-900 text-white'
+                              : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                            }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Quantity */}
                 <div>
@@ -241,8 +242,8 @@ export default function ProductModal({
                     {isAddingToCart ? (
                       <>
                         <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
                         Adding...
                       </>
@@ -253,7 +254,7 @@ export default function ProductModal({
                       </>
                     )}
                   </button>
-                  
+
                   <button
                     onClick={() => {
                       toggleItem(product);
@@ -261,12 +262,11 @@ export default function ProductModal({
                     }}
                     className="w-full border border-gray-300 py-4 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                   >
-                    <Heart 
-                      className={`h-5 w-5 ${
-                        isInWishlist(product.id) 
-                          ? 'fill-rose-500 text-rose-500' 
-                          : 'text-gray-600'
-                      }`}
+                    <Heart
+                      className={`h-5 w-5 ${isInWishlist(product.id)
+                        ? 'fill-rose-500 text-rose-500'
+                        : 'text-gray-600'
+                        }`}
                     />
                     {isInWishlist(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
                   </button>
