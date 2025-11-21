@@ -92,12 +92,33 @@ export default defineSchema({
 
   users: defineTable({
     email: v.string(),
+    passwordHash: v.string(),
+    passwordSalt: v.string(),
     name: v.string(),
+    phone: v.optional(v.string()),
     avatar: v.optional(v.string()),
+    address: v.optional(v.object({
+      line1: v.optional(v.string()),
+      line2: v.optional(v.string()),
+      city: v.optional(v.string()),
+      state: v.optional(v.string()),
+      postal_code: v.optional(v.string()),
+      country: v.optional(v.string()),
+    })),
+    dob: v.optional(v.string()),
+    preferences: v.optional(v.object({
+      sizes: v.optional(v.array(v.string())),
+      colors: v.optional(v.array(v.string())),
+      categories: v.optional(v.array(v.string())),
+    })),
+    stripeCustomerId: v.optional(v.string()),
+    verified: v.boolean(),
+    role: v.union(v.literal("user"), v.literal("admin")),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
-    .index("by_email", ["email"]),
+    .index("by_email", ["email"])
+    .index("by_role", ["role"]),
 
   addresses: defineTable({
     userId: v.id("users"),
@@ -160,6 +181,20 @@ export default defineSchema({
     userId: v.id("users"),
     productId: v.id("products"),
     addedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_product", ["productId"])
+    .index("by_user_product", ["userId", "productId"]),
+
+  cart: defineTable({
+    userId: v.id("users"),
+    productId: v.id("products"),
+    quantity: v.number(),
+    selectedSize: v.optional(v.string()),
+    selectedColor: v.optional(v.string()),
+    price: v.number(), // Store price at time of adding to cart
+    addedAt: v.number(),
+    updatedAt: v.number(),
   })
     .index("by_user", ["userId"])
     .index("by_product", ["productId"])
