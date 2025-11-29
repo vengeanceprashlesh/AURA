@@ -11,7 +11,7 @@ const Footer = () => {
   const aboutLinks = FOOTER.ABOUT_LINKS;
   const helpLinks = FOOTER.HELP_LINKS;
   const legalLinks = FOOTER.LEGAL_LINKS;
-  
+
   // Map social icons
   const socialLinksWithIcons = FOOTER.SOCIAL_LINKS.map(link => {
     let icon;
@@ -45,7 +45,7 @@ const Footer = () => {
                 {FOOTER.BRAND_DESCRIPTION}
               </p>
             </div>
-            
+
             {/* Newsletter Signup */}
             <div>
               <h3 className="font-heading text-lg font-semibold text-beige-100 mb-4">
@@ -60,11 +60,13 @@ const Footer = () => {
                   <input
                     type="email"
                     placeholder={FOOTER.NEWSLETTER.PLACEHOLDER}
+                    suppressHydrationWarning
                     className="w-full pl-10 pr-4 py-3 bg-charcoal-800 border border-charcoal-700 rounded-md text-beige-100 placeholder-beige-400 focus:outline-none focus:ring-2 focus:ring-dusty-rose-500 focus:border-dusty-rose-500 font-body"
                   />
                 </div>
                 <button
                   type="submit"
+                  suppressHydrationWarning
                   className="px-6 py-3 bg-dusty-rose-500 text-white font-medium rounded-md hover:bg-dusty-rose-600 focus:outline-none focus:ring-2 focus:ring-dusty-rose-500 focus:ring-offset-2 focus:ring-offset-charcoal-900 transition-colors font-body"
                 >
                   {FOOTER.NEWSLETTER.CTA_TEXT}

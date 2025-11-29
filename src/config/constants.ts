@@ -4,14 +4,14 @@ export const APP_CONFIG = {
   STORE_NAME: 'Aura',
   STORE_TAGLINE: 'Your style journey continues here',
   STORE_SUBTITLE: 'MARKETPLACE',
-  
+
   // Currency & Pricing
   CURRENCY: {
     SYMBOL: '₹',
     CODE: 'INR',
     LOCALE: 'en-IN'
   },
-  
+
   // Shipping & Delivery
   SHIPPING: {
     FREE_SHIPPING_THRESHOLD: 8000,
@@ -20,7 +20,7 @@ export const APP_CONFIG = {
     EXPRESS_DELIVERY_DAYS: '2-3',
     PROMOTIONAL_TEXT: 'FREE SHIPPING ON ORDERS OVER ₹8000 | FREE RETURNS | SHOP NOW, PAY LATER'
   },
-  
+
   // Policies
   POLICIES: {
     RETURN_POLICY_DAYS: 30,
@@ -28,7 +28,7 @@ export const APP_CONFIG = {
     WARRANTY_TEXT: 'Quality guarantee',
     EXCHANGE_POLICY_DAYS: 15
   },
-  
+
   // Default Product Values
   PRODUCTS: {
     DEFAULT_RATING: 4.8,
@@ -39,7 +39,7 @@ export const APP_CONFIG = {
     DEFAULT_DISCOUNT_PERCENTAGE: 15,
     NEW_PRODUCT_DAYS: 7
   },
-  
+
   // Social Proof
   SOCIAL_PROOF: {
     CUSTOMER_COUNT: '50K+',
@@ -49,7 +49,7 @@ export const APP_CONFIG = {
     NEW_STYLES: '1000+',
     NEW_STYLES_TEXT: 'New Styles Monthly'
   },
-  
+
   // Features & Benefits
   FEATURES: {
     PREMIUM_MATERIALS: '100% Premium Materials',
@@ -57,7 +57,7 @@ export const APP_CONFIG = {
     FAST_DELIVERY: 'Express delivery available',
     CUSTOMER_SUPPORT: '24/7 Customer Support'
   },
-  
+
   // Contact Information
   CONTACT: {
     EMAIL: 'hello@aura-store.com',
@@ -65,20 +65,20 @@ export const APP_CONFIG = {
     SUPPORT_EMAIL: 'support@aura-store.com',
     ADDRESS: 'Fashion District, Style City, India'
   },
-  
+
   // Sizing
   SIZES: {
     CLOTHING: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     SHOES: ['5', '6', '7', '8', '9', '10', '11'],
     ACCESSORIES: ['One Size']
   },
-  
+
   // Categories
   CATEGORIES: {
     MAIN: [
       'New Today',
       'Clothing',
-      'Accessories', 
+      'Accessories',
       'Beauty',
       'Shoes'
     ],
@@ -89,7 +89,7 @@ export const APP_CONFIG = {
       'Sale'
     ]
   },
-  
+
   // Navigation & Menu Items
   NAVIGATION: {
     MOBILE_MENU_LINKS: [
@@ -116,7 +116,7 @@ export const APP_CONFIG = {
         HREF: '/womens'
       },
       MEN: {
-        TITLE: 'MEN', 
+        TITLE: 'MEN',
         DESCRIPTION: 'Discover men\'s essentials',
         HREF: '/mens'
       },
@@ -166,11 +166,12 @@ export const APP_CONFIG = {
     ],
     COPYRIGHT: '© 2024 Aura. All rights reserved.'
   },
-  
+
   // UI Text & Labels
   UI_TEXT: {
     COMMON: {
       LOADING: 'Loading...',
+      SHOP: 'Shop',
       SEARCH: 'Search',
       SEARCH_PLACEHOLDER: 'Search for products, brands, or styles...',
       SEARCH_RESULTS: 'Search Results',
@@ -264,7 +265,7 @@ export const APP_CONFIG = {
       NOTIFICATIONS: 'Notifications'
     }
   },
-  
+
   // Error Messages
   ERROR_MESSAGES: {
     GENERAL: 'Something went wrong. Please try again.',
@@ -278,7 +279,7 @@ export const APP_CONFIG = {
       PASSWORD_MISMATCH: 'Passwords do not match.'
     }
   },
-  
+
   // Success Messages
   SUCCESS_MESSAGES: {
     PRODUCT_ADDED: 'Product added to cart!',
@@ -288,7 +289,7 @@ export const APP_CONFIG = {
     ORDER_PLACED: 'Order placed successfully!',
     NEWSLETTER_SUBSCRIBED: 'Successfully subscribed to newsletter!'
   },
-  
+
   // Promotional
   PROMOTIONS: {
     FIRST_ORDER_DISCOUNT: 10,
@@ -300,7 +301,7 @@ export const APP_CONFIG = {
       'Exclusive member pricing'
     ]
   },
-  
+
   // Animation & UI
   UI: {
     ANIMATION_DURATION: 300,
@@ -308,7 +309,7 @@ export const APP_CONFIG = {
     TOAST_DURATION: 3000,
     HERO_SLIDES_DURATION: 5000
   },
-  
+
   // SEO & Meta
   SEO: {
     SITE_DESCRIPTION: 'Discover your signature style with Aura - premium fashion for confident women',

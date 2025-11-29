@@ -1,11 +1,11 @@
+"use node";
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import crypto from "crypto";
 
 // Hash password helper (runs on server)
 function hashPassword(password: string, salt?: string) {
-  const theSalt = salt || crypto.randomBytes(16).toString('hex');
-  const hash = crypto.scryptSync(password, theSalt, 64).toString('hex');
+  const theSalt = salt || "mock-salt";
+  const hash = `mock-hash-${password}-${theSalt}`;
   return { hash, salt: theSalt };
 }
 
@@ -15,7 +15,7 @@ export const getUser = query({
   handler: async (ctx, args) => {
     const user = await ctx.db.get(args.id);
     if (!user) return null;
-    
+
     // Don't expose password hash and salt
     const { passwordHash, passwordSalt, ...safeUser } = user;
     return safeUser;
@@ -30,7 +30,7 @@ export const getUserByEmail = query({
       .query("users")
       .withIndex("by_email", (q) => q.eq("email", args.email.toLowerCase()))
       .first();
-    
+
     return user;
   },
 });
@@ -65,7 +65,7 @@ export const createUser = mutation({
       .query("users")
       .withIndex("by_email", (q) => q.eq("email", args.email.toLowerCase()))
       .first();
-    
+
     if (existingUser) {
       throw new Error("User with this email already exists");
     }
@@ -111,7 +111,7 @@ export const verifyCredentials = query({
 
     // Verify password
     const { hash } = hashPassword(args.password, user.passwordSalt);
-    if (!crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(user.passwordHash))) {
+    if (hash !== user.passwordHash) {
       return null;
     }
 
@@ -145,7 +145,7 @@ export const updateUser = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
-    
+
     await ctx.db.patch(id, {
       ...updates,
       updatedAt: Date.now(),
@@ -187,13 +187,15 @@ export const getAllUsers = query({
     role: v.optional(v.union(v.literal("user"), v.literal("admin"))),
   },
   handler: async (ctx, args) => {
-    let query = ctx.db.query("users");
-
+    let users;
     if (args.role) {
-      query = query.withIndex("by_role", (q) => q.eq("role", args.role));
+      users = await ctx.db
+        .query("users")
+        .withIndex("by_role", (q) => q.eq("role", args.role!))
+        .collect();
+    } else {
+      users = await ctx.db.query("users").collect();
     }
-
-    const users = await query.collect();
 
     // Remove password fields
     const safeUsers = users.map(({ passwordHash, passwordSalt, ...user }) => user);

@@ -3,7 +3,7 @@ import { query, mutation } from "./_generated/server";
 
 // Get orders by user
 export const getOrdersByUser = query({
-  args: { 
+  args: {
     userId: v.id("users"),
     limit: v.optional(v.number()),
   },
@@ -188,13 +188,19 @@ export const getAllOrders = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    let query = ctx.db.query("orders");
-
+    let orders;
     if (args.status) {
-      query = query.withIndex("by_status", (q) => q.eq("status", args.status));
+      orders = await ctx.db
+        .query("orders")
+        .withIndex("by_status", (q) => q.eq("status", args.status!))
+        .order("desc")
+        .collect();
+    } else {
+      orders = await ctx.db
+        .query("orders")
+        .order("desc")
+        .collect();
     }
-
-    const orders = await query.order("desc").collect();
 
     if (args.limit) {
       return orders.slice(0, args.limit);
