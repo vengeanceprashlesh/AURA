@@ -3,7 +3,6 @@ import { withErrorHandler } from '@/lib/middleware/error.middleware';
 import { createSession, ADMIN_COOKIE } from '@/lib/middleware/auth.middleware';
 import { successResponse, errorResponse } from '@/lib/utils/response';
 import { userService } from '@/lib/services/user.service';
-import { logger } from '@/lib/utils/logger';
 import { z } from 'zod';
 
 export const runtime = 'nodejs';
@@ -25,7 +24,6 @@ async function handler(request: NextRequest) {
 
     const { id, password } = result.data;
 
-    logger.info('Admin login attempt', { adminId: id });
 
     try {
         // Verify credentials
@@ -34,7 +32,6 @@ async function handler(request: NextRequest) {
 
         // Check if user has admin role
         if (user.role !== 'admin') {
-            logger.warn('Unauthorized admin login attempt', { userId: user._id, role: user.role });
             return errorResponse('Unauthorized access', 403, 'FORBIDDEN');
         }
 
@@ -65,7 +62,6 @@ async function handler(request: NextRequest) {
             maxAge: 60 * 60 * 8, // 8 hours for admin session
         });
 
-        logger.info('Admin login successful', { userId: user._id });
 
         return response;
     } catch (error: any) {

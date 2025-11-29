@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AppError } from '../utils/errors';
 import { errorResponse } from '../utils/response';
-import { logger } from '../utils/logger';
 import { ZodError } from 'zod';
 
 export type RouteHandler = (
@@ -27,12 +26,15 @@ function handleError(error: unknown, request: NextRequest): NextResponse {
 
   // Handle known AppError instances
   if (error instanceof AppError) {
-    logger.warn(`AppError: ${error.message}`, {
-      method,
-      path,
-      statusCode: error.statusCode,
-    });
-    
+    // Log to console in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`AppError: ${error.message}`, {
+        method,
+        path,
+        statusCode: error.statusCode,
+      });
+    }
+
     return errorResponse(
       error.message,
       error.statusCode,
@@ -42,12 +44,14 @@ function handleError(error: unknown, request: NextRequest): NextResponse {
 
   // Handle Zod validation errors
   if (error instanceof ZodError) {
-    logger.warn('Validation error', {
-      method,
-      path,
-      issues: error.issues,
-    });
-    
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Validation error', {
+        method,
+        path,
+        issues: error.issues,
+      });
+    }
+
     return errorResponse(
       'Validation failed',
       400,
@@ -61,18 +65,18 @@ function handleError(error: unknown, request: NextRequest): NextResponse {
 
   // Handle generic errors
   if (error instanceof Error) {
-    logger.error('Unhandled error', error, { method, path });
-    
+    console.error('Unhandled error:', error, { method, path });
+
     // Don't expose internal error details in production
     const message = process.env.NODE_ENV === 'production'
       ? 'An unexpected error occurred'
       : error.message;
-    
+
     return errorResponse(message, 500, 'INTERNAL_ERROR');
   }
 
   // Handle unknown errors
-  logger.error('Unknown error type', undefined, { method, path, error });
+  console.error('Unknown error type:', error, { method, path });
   return errorResponse('An unexpected error occurred', 500, 'UNKNOWN_ERROR');
 }
 
@@ -83,12 +87,12 @@ export function withAuth(
 ): RouteHandler {
   return withErrorHandler(async (request: NextRequest, context?: any) => {
     const authResult = await requireAuth(request);
-    
+
     // If authResult is a NextResponse, it's an error response
     if (authResult instanceof NextResponse) {
       return authResult;
     }
-    
+
     return await handler(request, authResult.userId, context);
   });
 }

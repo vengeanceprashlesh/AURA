@@ -4,25 +4,22 @@ import { createSession, USER_COOKIE } from '@/lib/middleware/auth.middleware';
 import { createdResponse } from '@/lib/utils/response';
 import { validateRequest, signupSchema } from '@/lib/utils/validators';
 import { userService } from '@/lib/services/user.service';
-import { logger } from '@/lib/utils/logger';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 async function handler(request: NextRequest) {
   const body = await request.json();
-  
+
   // Validate request
   const data = validateRequest(signupSchema, body);
-  
-  logger.info('Signup attempt', { email: data.email });
-  
+
   // Create user
   const userId = await userService.createUser(data);
-  
+
   // Create session token
   const token = createSession(userId as string, 'user');
-  
+
   // Create response
   const response = createdResponse(
     {
@@ -34,7 +31,7 @@ async function handler(request: NextRequest) {
     },
     'User created successfully'
   );
-  
+
   // Set cookie
   response.cookies.set({
     name: USER_COOKIE,
@@ -45,9 +42,7 @@ async function handler(request: NextRequest) {
     secure: process.env.NODE_ENV === 'production',
     maxAge: 60 * 60 * 24 * 30, // 30 days
   });
-  
-  logger.info('Signup successful', { userId });
-  
+
   return response;
 }
 
