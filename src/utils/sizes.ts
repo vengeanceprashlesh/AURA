@@ -81,36 +81,40 @@ export const BRA_SIZES: SizeOption[] = [
 // Get sizes for a specific category
 export function getSizesForCategory(category: string): SizeOption[] {
   const normalizedCategory = category.toLowerCase();
-  
+
   // Shoes and footwear
-  if (normalizedCategory.includes('shoe') || 
-      normalizedCategory.includes('boot') || 
-      normalizedCategory.includes('sandal') || 
-      normalizedCategory.includes('sneaker') ||
-      normalizedCategory.includes('heel')) {
+  if (normalizedCategory.includes('shoe') ||
+    normalizedCategory.includes('boot') ||
+    normalizedCategory.includes('sandal') ||
+    normalizedCategory.includes('sneaker') ||
+    normalizedCategory.includes('heel')) {
     return SHOE_SIZES;
   }
-  
+
   // Jewelry - rings
   if (normalizedCategory.includes('ring')) {
     return RING_SIZES;
   }
-  
+
   // Intimates - bras
-  if (normalizedCategory.includes('bra') || 
-      normalizedCategory.includes('intimate')) {
+  if (normalizedCategory.includes('bra') ||
+    normalizedCategory.includes('intimate')) {
     return BRA_SIZES;
   }
-  
-  // Accessories - bags, hats, etc.
-  if (normalizedCategory.includes('bag') || 
-      normalizedCategory.includes('hat') || 
-      normalizedCategory.includes('accessori') ||
-      normalizedCategory.includes('scarf') ||
-      normalizedCategory.includes('belt')) {
+
+  // Accessories - bags, hats, jewelry, etc.
+  if (normalizedCategory.includes('bag') ||
+    normalizedCategory.includes('hat') ||
+    normalizedCategory.includes('accessori') ||
+    normalizedCategory.includes('scarf') ||
+    normalizedCategory.includes('belt') ||
+    normalizedCategory.includes('jewelry') ||
+    normalizedCategory.includes('earring') ||
+    normalizedCategory.includes('necklace') ||
+    normalizedCategory.includes('bracelet')) {
     return ACCESSORY_SIZES;
   }
-  
+
   // Default to clothing sizes for everything else
   return CLOTHING_SIZES;
 }
