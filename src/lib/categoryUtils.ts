@@ -29,30 +29,30 @@ export const getSubcategoriesByCategory = (categoryId: string) => {
 export const generateBreadcrumb = (href: string): string[] => {
   // Remove leading slash and split by slash
   const pathSegments = href.replace(/^\//, '').split('/');
-  
+
   // Generate breadcrumb labels
   const breadcrumb: string[] = [];
-  
+
   // Find the category
   const categorySlug = pathSegments[1]; // categories/[slug]
   const category = getCategoryBySlug(categorySlug);
-  
+
   if (category) {
     breadcrumb.push('Home', category.name);
-    
+
     // If there are subcategory segments
     if (pathSegments.length > 2) {
       const subcategorySlug = pathSegments[2];
       const subcategory = category.subcategories?.find(sub => sub.slug === subcategorySlug);
-      
+
       if (subcategory) {
         breadcrumb.push(subcategory.name);
-        
+
         // If there are item segments
         if (pathSegments.length > 3) {
           const itemSlug = pathSegments[3];
           const item = subcategory.items?.find(item => item.href.includes(itemSlug));
-          
+
           if (item) {
             breadcrumb.push(item.name);
           }
@@ -60,7 +60,7 @@ export const generateBreadcrumb = (href: string): string[] => {
       }
     }
   }
-  
+
   return breadcrumb;
 };
 
@@ -147,7 +147,7 @@ export const searchCategories = (query: string): Array<{
     item?: any;
     matchType: 'category' | 'subcategory' | 'item';
   }> = [];
-  
+
   const normalizedQuery = query.toLowerCase();
 
   navigationCategories.forEach(category => {
@@ -191,11 +191,11 @@ export const searchCategories = (query: string): Array<{
  */
 export const getCategoryPathFromUrl = (url: string): string[] => {
   const pathSegments = url.replace(/^\//, '').split('/');
-  
+
   if (pathSegments[0] !== 'categories') {
     return [];
   }
-  
+
   return pathSegments.slice(1); // Remove 'categories' prefix
 };
 
@@ -216,22 +216,22 @@ export const generateCategoryUrl = (
   itemSlug?: string
 ): string => {
   let url = `/categories/${categorySlug}`;
-  
+
   if (subcategorySlug) {
     url += `/${subcategorySlug}`;
   }
-  
+
   if (itemSlug) {
     url += `/${itemSlug}`;
   }
-  
+
   return url;
 };
 
 /**
  * Get menu layout type for category
  */
-export const getCategoryMenuLayout = (categoryId: string): 'simple' | 'columns' | 'grid' => {
+export const getCategoryMenuLayout = (categoryId: string): 'simple' | 'columns' | 'grid' | 'revolve' => {
   const category = getCategoryById(categoryId);
   return category?.megaMenuLayout || 'simple';
 };

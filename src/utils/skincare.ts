@@ -1,10 +1,10 @@
 // Skincare utility functions
 
-import type { 
-  SkinProfile, 
-  SkincareProduct, 
-  SkinType, 
-  SkinConcern, 
+import type {
+  SkinProfile,
+  SkincareProduct,
+  SkinType,
+  SkinConcern,
   SkincareFilter,
   SkincareRoutine,
   SkinQuizResult
@@ -34,7 +34,7 @@ export function calculateProductMatch(product: SkincareProduct, skinProfile: Ski
   factors += 30;
 
   // Secondary concerns match (20% weight)
-  const secondaryMatches = product.concerns.filter(concern => 
+  const secondaryMatches = product.concerns.filter(concern =>
     skinProfile.secondaryConcerns.includes(concern)
   ).length;
   if (secondaryMatches > 0) {
@@ -61,10 +61,10 @@ export function getPersonalizedMessage(product: SkincareProduct, skinProfile: Sk
   const messages = [
     `Perfect for your ${skinTypeConfig?.name.toLowerCase()} - ${product.name} provides exactly what you need`,
     `Ideal for addressing ${concernConfig?.name.toLowerCase()} - this formula targets your main skin goal`,
-    `Recommended for ${skinProfile.ageGroup === 'twenties' ? 'building healthy habits in your 20s' : 
+    `Recommended for ${skinProfile.ageGroup === 'twenties' ? 'building healthy habits in your 20s' :
       skinProfile.ageGroup === 'thirties' ? 'prevention and maintenance in your 30s' :
-      skinProfile.ageGroup === 'forties' ? 'targeted care in your 40s' :
-      skinProfile.ageGroup === 'fifties_plus' ? 'mature skin care' : 'your age group'}`,
+        skinProfile.ageGroup === 'forties' ? 'targeted care in your 40s' :
+          skinProfile.ageGroup === 'fifties_plus' ? 'mature skin care' : 'your age group'}`,
     `Great match for your skin type - ${product.description}`
   ];
 
@@ -75,7 +75,7 @@ export function getPersonalizedMessage(product: SkincareProduct, skinProfile: Sk
  * Filter products based on skincare-specific criteria
  */
 export function filterSkincareProducts(
-  products: SkincareProduct[], 
+  products: SkincareProduct[],
   filters: Partial<SkincareFilter>,
   skinProfile?: SkinProfile
 ): SkincareProduct[] {
@@ -83,7 +83,7 @@ export function filterSkincareProducts(
 
   // Filter by skin types
   if (filters.skinTypes && filters.skinTypes.length > 0) {
-    filtered = filtered.filter(product => 
+    filtered = filtered.filter(product =>
       product.skinTypes.some(type => filters.skinTypes!.includes(type))
     );
   }
@@ -164,7 +164,7 @@ export function filterSkincareProducts(
  * Sort skincare products based on various criteria
  */
 export function sortSkincareProducts(
-  products: SkincareProduct[], 
+  products: SkincareProduct[],
   sortBy: string
 ): SkincareProduct[] {
   const sorted = [...products];
@@ -200,7 +200,7 @@ export function getRoutineOrder(products: SkincareProduct[]): SkincareProduct[] 
  * Build a complete skincare routine based on skin profile
  */
 export function buildSkincareRoutine(
-  products: SkincareProduct[], 
+  products: SkincareProduct[],
   skinProfile: SkinProfile
 ): SkincareRoutine {
   const filtered = filterSkincareProducts(products, {
@@ -215,15 +215,15 @@ export function buildSkincareRoutine(
   // Morning routine
   const morningProducts = filtered
     .filter(p => p.applicationTime.includes('morning') || p.applicationTime.includes('both'))
-    .filter(p => essentialCategories.includes(p.category) || 
-                 (treatmentCategories.includes(p.category) && p.matchScore! > 80))
+    .filter(p => essentialCategories.includes(p.category) ||
+      (treatmentCategories.includes(p.category) && p.matchScore! > 80))
     .slice(0, 4);
 
   // Evening routine  
   const eveningProducts = filtered
     .filter(p => p.applicationTime.includes('evening') || p.applicationTime.includes('both'))
-    .filter(p => essentialCategories.includes(p.category) || 
-                 treatmentCategories.includes(p.category))
+    .filter(p => essentialCategories.includes(p.category) ||
+      treatmentCategories.includes(p.category))
     .slice(0, 5);
 
   // Weekly treatments
@@ -255,15 +255,15 @@ export function buildSkincareRoutine(
 function getExpectedResults(skinProfile: SkinProfile): string[] {
   const results = [];
   const concernConfig = APP_CONFIG.SKINCARE.CONCERNS[skinProfile.primaryConcern.toUpperCase() as keyof typeof APP_CONFIG.SKINCARE.CONCERNS];
-  
+
   results.push(`Improved ${concernConfig?.name.toLowerCase() || skinProfile.primaryConcern}`);
   results.push('Enhanced skin texture and radiance');
   results.push('Better hydration and comfort');
-  
+
   if (skinProfile.ageGroup === 'thirties' || skinProfile.ageGroup === 'forties' || skinProfile.ageGroup === 'fifties_plus') {
     results.push('Reduced signs of aging');
   }
-  
+
   return results;
 }
 
@@ -321,12 +321,12 @@ export function analyzeSkinQuiz(answers: Record<string, any>): SkinQuizResult {
 function getSkincareTips(skinProfile: SkinProfile): string[] {
   const tips = [];
   const skinTypeConfig = APP_CONFIG.SKINCARE.SKIN_TYPES[skinProfile.skinType.toUpperCase() as keyof typeof APP_CONFIG.SKINCARE.SKIN_TYPES];
-  
+
   tips.push(skinTypeConfig?.routine_focus || 'Follow a consistent daily routine');
   tips.push('Always wear SPF during the day');
   tips.push('Introduce new products gradually');
   tips.push('Listen to your skin and adjust as needed');
-  
+
   return tips;
 }
 
@@ -334,7 +334,7 @@ function getSkincareTips(skinProfile: SkinProfile): string[] {
  * Get personalized product recommendations based on skin profile
  */
 export function getPersonalizedRecommendations(
-  products: SkincareProduct[], 
+  products: SkincareProduct[],
   skinProfile: SkinProfile
 ): SkincareProduct[] {
   // Filter products that match the skin profile
@@ -368,7 +368,7 @@ export function getPopularIngredients(skinType: SkinType): string[] {
  */
 export function isIngredientSuitable(ingredientName: string, skinType: SkinType): boolean {
   const suitableIngredients = getPopularIngredients(skinType);
-  return suitableIngredients.some(ingredient => 
+  return suitableIngredients.some(ingredient =>
     ingredient.toLowerCase().includes(ingredientName.toLowerCase()) ||
     ingredientName.toLowerCase().includes(ingredient.toLowerCase())
   );
@@ -436,7 +436,7 @@ export function generateMockSkincareProducts(): SkincareProduct[] {
     ageGroups: ['twenties', 'thirties', 'forties'],
     keyIngredients: [
       { name: 'Vitamin C (L-Ascorbic Acid)', concentration: '15%', purpose: 'Brightening', benefits: ['Fades dark spots', 'Antioxidant protection', 'Boosts collagen'], suitableFor: ['normal', 'oily'], concerns: ['dark_spots', 'aging'] },
-      { name: 'Hyaluronic Acid', purpose: 'Hydrating', benefits: ['Intense hydration', 'Plumping effect'], suitableFor: ['all'], concerns: ['hydration'] }
+      { name: 'Hyaluronic Acid', purpose: 'Hydrating', benefits: ['Intense hydration', 'Plumping effect'], suitableFor: ['normal', 'oily', 'dry', 'combination', 'sensitive', 'mature'], concerns: ['hydration'] }
     ],
     applicationTime: ['morning'],
     productType: 'treatment',
