@@ -78,7 +78,6 @@ export default function SkincarePage() {
             products={products || []}
             onComplete={(result) => {
               setSkinProfile(result.skinProfile);
-              setSkinProfile(result.skinProfile);
             }}
           />
         </div>
