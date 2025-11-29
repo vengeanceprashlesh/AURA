@@ -201,7 +201,7 @@ export default function TrendingSection({ compact = false, maxCategories = 4, cl
     if (isLiveUpdating && !compact) {
       const interval = setInterval(() => {
         // This would update trend scores in a real app
-        console.log('Live update...');
+        // This would update trend scores in a real app
       }, 5000);
       return () => clearInterval(interval);
     }
@@ -215,12 +215,12 @@ export default function TrendingSection({ compact = false, maxCategories = 4, cl
           <Flame className="h-5 w-5 text-red-500" />
           <h3 className="font-heading text-xl font-bold text-charcoal-900">Trending Now</h3>
         </div>
-        
+
         <div className="space-y-4">
           {categoriesToShow.map((category, index) => {
             const Icon = category.icon;
             const topProduct = category.products[0];
-            
+
             return (
               <motion.div
                 key={category.id}
@@ -288,15 +288,14 @@ export default function TrendingSection({ compact = false, maxCategories = 4, cl
           <button
             key={period}
             onClick={() => setTimeframe(period)}
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
-              timeframe === period
+            className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${timeframe === period
                 ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white shadow-md'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
+              }`}
           >
-            {period === '1h' ? 'Hour' : 
-             period === '24h' ? 'Today' :
-             period === '7d' ? 'Week' : 'Month'}
+            {period === '1h' ? 'Hour' :
+              period === '24h' ? 'Today' :
+                period === '7d' ? 'Week' : 'Month'}
           </button>
         ))}
       </div>
@@ -309,20 +308,17 @@ export default function TrendingSection({ compact = false, maxCategories = 4, cl
             <button
               key={category.id}
               onClick={() => setActiveCategory(index)}
-              className={`relative p-4 rounded-xl border-2 transition-all duration-300 ${
-                activeCategory === index
+              className={`relative p-4 rounded-xl border-2 transition-all duration-300 ${activeCategory === index
                   ? `border-transparent bg-gradient-to-br ${getCategoryGradient(category.color)} text-white shadow-lg scale-105`
                   : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:shadow-md'
-              }`}
+                }`}
             >
               <div className="text-center">
-                <Icon className={`h-6 w-6 mx-auto mb-2 ${
-                  activeCategory === index ? 'text-white' : `text-${category.color}-500`
-                }`} />
+                <Icon className={`h-6 w-6 mx-auto mb-2 ${activeCategory === index ? 'text-white' : `text-${category.color}-500`
+                  }`} />
                 <div className="font-bold text-sm mb-1">{category.name}</div>
-                <div className={`text-xs ${
-                  activeCategory === index ? 'text-white/80' : 'text-gray-500'
-                }`}>
+                <div className={`text-xs ${activeCategory === index ? 'text-white/80' : 'text-gray-500'
+                  }`}>
                   {category.products.length} items
                 </div>
               </div>
@@ -376,7 +372,7 @@ export default function TrendingSection({ compact = false, maxCategories = 4, cl
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      
+
                       {/* Badges */}
                       <div className="absolute top-3 left-3">
                         <div className={`flex items-center gap-1 ${getTrendColor(product.trendScore)} px-2 py-1 rounded-full text-xs font-bold`}>
@@ -414,19 +410,18 @@ export default function TrendingSection({ compact = false, maxCategories = 4, cl
                             }
                             setFavorites(newFavorites);
                           }}
-                          className={`p-2 rounded-full backdrop-blur-md transition-colors ${
-                            favorites.has(product.id)
+                          className={`p-2 rounded-full backdrop-blur-md transition-colors ${favorites.has(product.id)
                               ? 'bg-red-500 text-white'
                               : 'bg-white/90 text-gray-700 hover:bg-red-500 hover:text-white'
-                          }`}
+                            }`}
                         >
                           <Heart className="h-3 w-3" fill={favorites.has(product.id) ? 'currentColor' : 'none'} />
                         </button>
-                        
+
                         <button className="p-2 rounded-full bg-white/90 text-gray-700 hover:bg-blue-500 hover:text-white backdrop-blur-md transition-colors">
                           <Share2 className="h-3 w-3" />
                         </button>
-                        
+
                         <button className={`p-2 rounded-full bg-gradient-to-r ${getCategoryGradient(categoriesToShow[activeCategory].color)} text-white backdrop-blur-md transition-colors`}>
                           <ShoppingBag className="h-3 w-3" />
                         </button>

@@ -26,7 +26,7 @@ function isBuildTime(): boolean {
 export function getConvexClient(): ConvexHttpClient {
   // Get the URL from environment variables first
   const url = process.env.NEXT_PUBLIC_CONVEX_URL;
-  
+
   // If we're in build time or missing URL, return mock client
   if (isBuildTime() || !url) {
     if (!url) {
@@ -43,8 +43,8 @@ export function getConvexClient(): ConvexHttpClient {
     return convexClient;
   }
 
-  console.log('[RUNTIME] Creating real Convex client with URL:', url);
-  
+
+
   // Create and cache the client
   convexClient = new ConvexHttpClient(url);
   return convexClient;

@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
-import { 
-  Heart, 
-  Sparkles, 
-  Star, 
-  Leaf, 
-  TestTube, 
-  ShieldCheck, 
+import {
+  Heart,
+  Sparkles,
+  Star,
+  Leaf,
+  TestTube,
+  ShieldCheck,
   Sun,
   X,
   ArrowRight,
@@ -37,7 +37,7 @@ export default function SkincarePage() {
   }, []);
 
   // Use Convex to get real skincare products
-  const products = useQuery(api.products.getProducts, { 
+  const products = useQuery(api.products.getProducts, {
     category: 'skincare'
   });
 
@@ -73,13 +73,13 @@ export default function SkincarePage() {
               Take our personalized skin analysis quiz to find products perfectly suited for your unique needs
             </p>
           </motion.div>
-          
-          <SkinQuiz 
-            products={products || []} 
+
+          <SkinQuiz
+            products={products || []}
             onComplete={(result) => {
               setSkinProfile(result.skinProfile);
-              console.log('Quiz completed:', result);
-            }} 
+              setSkinProfile(result.skinProfile);
+            }}
           />
         </div>
       </section>
@@ -103,10 +103,10 @@ export default function SkincarePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {products?.map((product, index) => (
-                <SkincareProductCard 
-                  key={product._id} 
-                  product={product} 
-                  index={index} 
+                <SkincareProductCard
+                  key={product._id}
+                  product={product}
+                  index={index}
                   onProductClick={handleProductClick}
                 />
               ))}
@@ -136,18 +136,18 @@ export default function SkincarePage() {
 }
 
 // Skincare Product Card Component
-function SkincareProductCard({ 
-  product, 
-  index, 
-  onProductClick 
-}: { 
-  product: any; 
-  index: number; 
+function SkincareProductCard({
+  product,
+  index,
+  onProductClick
+}: {
+  product: any;
+  index: number;
   onProductClick?: (product: any) => void;
 }) {
   const { addItem } = useCart();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  
+
   // Extract skincare data from the product
   const skincareData = product.skincareData || {};
   const brand = product.brand || skincareData.brand || 'Unknown Brand';
@@ -157,15 +157,15 @@ function SkincareProductCard({
       onProductClick(product);
     }
   };
-  
+
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (!product.inStock || isAddingToCart) return;
-    
+
     setIsAddingToCart(true);
-    
+
     try {
       // Convert the product to the expected format for the cart
       const cartProduct = {
@@ -186,15 +186,15 @@ function SkincareProductCard({
         createdAt: new Date(product.createdAt || Date.now()),
         updatedAt: new Date(product.updatedAt || Date.now())
       };
-      
+
       // Use CartContext addItem method (expects product, quantity, selectedSize)
       addItem(cartProduct, 1);
-      
+
       // Brief delay to show loading state
       setTimeout(() => {
         setIsAddingToCart(false);
       }, 800);
-      
+
     } catch (error) {
       console.error('Error adding to cart:', error);
       setIsAddingToCart(false);
@@ -222,7 +222,7 @@ function SkincareProductCard({
             <TestTube className="h-12 w-12 text-rose-300" />
           </div>
         )}
-        
+
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {product.featured && (
@@ -283,8 +283,8 @@ function SkincareProductCard({
               </span>
             )}
           </div>
-          
-          <motion.button 
+
+          <motion.button
             onClick={handleAddToCart}
             disabled={!product.inStock || isAddingToCart}
             className="bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-rose-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[90px]"
