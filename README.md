@@ -12,6 +12,25 @@ A modern e-commerce platform built with Next.js, featuring a beautiful skincare 
 - **🗄️ Real-time Backend** - Convex for serverless backend with real-time updates
 - **📱 Fully Responsive** - Optimized for mobile, tablet, and desktop
 
+## 📸 Screenshots & Demo
+
+### Live Demo
+🌐 **[View Live Demo](#)** _(Add your deployed URL here)_
+
+### Project Screenshots
+
+<details>
+<summary>🖼️ Click to view screenshots</summary>
+
+_Add screenshots of your application here:_
+- Homepage
+- Skincare Quiz
+- Product Catalog
+- Shopping Cart
+- User Profile
+
+</details>
+
 ## 🚀 Tech Stack
 
 ### Frontend
@@ -40,7 +59,7 @@ A modern e-commerce platform built with Next.js, featuring a beautiful skincare 
 ### 1. Clone and Install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/YOUR-USERNAME/aura-store.git
 cd aura-store
 npm install
 ```
